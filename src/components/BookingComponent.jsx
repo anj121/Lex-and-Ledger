@@ -66,6 +66,7 @@ const BookingComponent = ({
   handleBackToHome,
   handleBackToCategory,
   setSelectedService,
+  routeCategoryId
 }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -170,7 +171,7 @@ const BookingComponent = ({
       </div>
     );
   };
-
+console.log({selectedService})
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* {renderNavigationButtons()} */}
@@ -184,8 +185,7 @@ const BookingComponent = ({
           </div>
         </div>
       </header> */}
-{selectedService?<ServiceDetailPage serviceData={selectedService}/>:
-      <div className="max-w-4xl mx-auto px-6 py-12">
+        <div className="max-w-4xl mx-auto px-6 py-12">
         {bookingStep < 4 && renderProgressBar()}
         {bookingStep === 1 && (
           <div className="space-y-8">
@@ -244,13 +244,18 @@ const BookingComponent = ({
                 <Card className="border border-gray-100">
                   <CardHeader>
                     <CardTitle className="text-xl text-gray-900">
-                      <div className="flex items-center">
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-row items-center">
+
                         <ArrowLeft
                           className="w-4 h-4 mr-2 cursor-pointer"
                           onClick={handleBackToCategory}
                         />
 
                         <p>Service Summary</p>
+                        </div>
+                        <p className="text-blue-500 text-[12px] cursor-pointer" onClick={()=>navigate(`/service-detail/${selectedService.id}/${routeCategoryId}`)}>go to Service Detail</p>
+
                       </div>
                     </CardTitle>
                   </CardHeader>
@@ -477,7 +482,8 @@ const BookingComponent = ({
             </Button>
           </div>
         )}
-      </div>}
+      </div>
+
     </div>
   );
 };

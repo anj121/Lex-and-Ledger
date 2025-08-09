@@ -1,24 +1,89 @@
 
-import { useState } from 'react'
+import { useState ,useEffect} from 'react'
 import '../App'
+import { useParams } from 'react-router-dom';
+import { serviceCategories } from '@/static/service-data';
 
-export function ServiceDetailPage({serviceData}) {
+export function ServiceDetailPage() {
   const [activeAccordion, setActiveAccordion] = useState(null)
-console.log({serviceData})
- const parsePrice = (priceStr) => {
-  const match = priceStr.match(/₹([\d,]+)/);
-  if (!match) return null;
-  return parseInt(match[1].replace(/,/g, ""), 10);
+  const [serviceData, setSelectedService] = useState(null);
+    const { serviceId: routeServiceId } = useParams();
+  const { categoryId: routeCategoryId } = useParams();
+
+  useEffect(() => {
+      const serviceId = sessionStorage.getItem("serviceId");
+      const categoryId = sessionStorage.getItem("serviceCategoryId");
+      const step = sessionStorage.getItem("bookingStep");
+  
+      if (routeServiceId) {
+        const category = serviceCategories.find(cat => cat.id === routeCategoryId);
+        const selectedService=category.services.find((ser)=>ser.id.toString()===serviceId.toString());
+        if (category && category.services.length > 0) {
+          setSelectedService({...selectedService,categoryTitle:category.title}); 
+              window.scrollTo({ top: 0, behavior: "smooth" });
+  
+        }
+        return; 
+      }
+  
+      // Normal booking session logic
+  
+      if (serviceId && categoryId) {
+        const category = serviceCategories.find(cat => cat.id === categoryId);
+        if (category) {
+          const service = category.services.find(srv => srv.id === parseInt(serviceId));
+          if (service) setSelectedService({...service,categoryTitle:category.title});
+        }
+      }
+    }, [routeServiceId]);
+const parsePrice = (priceStr) => {
+  try {
+    if (typeof priceStr !== 'string') {
+      throw new TypeError('Input must be a string');
+    }
+
+    const match = priceStr.match(/₹([\d,]+)/);
+    if (!match) {
+      throw new Error('Price format is invalid or missing ₹ symbol');
+    }
+
+    const numericValue = parseInt(match[1].replace(/,/g, ""), 10);
+    if (isNaN(numericValue)) {
+      throw new Error('Parsed value is not a valid number');
+    }
+
+    return numericValue;
+  } catch (error) {
+    console.error(`parsePrice error: ${error.message}`);
+    return null;
+  }
 };
-const originalPriceStr = serviceData.price; 
+
+const originalPriceStr = serviceData?.price||""; 
 const originalPrice = parsePrice(originalPriceStr); 
 const discountAmount = Math.round(originalPrice * 0.24); 
 const finalPrice = originalPrice - discountAmount;
 
-const formatRupees = (amount) =>
-  "₹" + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+const formatRupees = (amount) => {
+  try {
+    if (amount === null || amount === undefined) {
+      throw new Error("Amount is null or undefined");
+    }
 
-const suffix = originalPriceStr.includes("/month") ? "/month" : "";
+    const num = Number(amount);
+
+    if (isNaN(num)) {
+      throw new TypeError("Amount must be a valid number or numeric string");
+    }
+
+    return "₹" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  } catch (error) {
+    console.error(`formatRupees error: ${error.message}`);
+    return null;
+  }
+};
+
+const suffix = originalPriceStr?originalPriceStr.includes("/month") ? "/month" : "":"";
 
   const keyFeatures = [
     {
@@ -132,6 +197,9 @@ const suffix = originalPriceStr.includes("/month") ? "/month" : "";
   const toggleAccordion = (index) => {
     setActiveAccordion(activeAccordion === index ? null : index)
   }
+  if(!serviceData){
+    return null
+  }
 
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -222,7 +290,7 @@ const suffix = originalPriceStr.includes("/month") ? "/month" : "";
           </h3>
           <div className="section-content">
             <div className="documents-list">
-              {serviceData.documents.map((doc, index) => (
+              {(serviceData.documents??[]).map((doc, index) => (
                 <div key={index} className="document-item">
                   <div className="document-icon">📋</div>
                   <strong style={{ display: 'block', marginBottom: '0.2rem', color: '#333', fontSize: '0.95rem' }}>{doc}</strong>
@@ -257,7 +325,7 @@ const suffix = originalPriceStr.includes("/month") ? "/month" : "";
     <div className="absolute top-0 right-0 animate-pulse text-yellow-300 p-4 text-xl">✨</div>
     
     <h3 className="text-2xl font-semibold mb-6 flex items-center justify-center animate-fadeIn">
-      💰 <span className="ml-2">Bundle Pricing</span>
+      💰 <span className="ml-2">Service Pricing</span>
     </h3>
     
     <div className="mb-4 transition-all duration-500">
@@ -276,7 +344,7 @@ const suffix = originalPriceStr.includes("/month") ? "/month" : "";
     </p>
     
     <button className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:shadow-xl hover:scale-105 animate-fadeIn">
-      Select This Bundle
+      Select This Service
     </button>
   </div>
 </section>

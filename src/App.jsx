@@ -43,6 +43,7 @@ import { StepperProvider, useStepperContext } from "./components/stepper.jsx";
 import { Box, Container } from "@mui/material";
 import RegistrationStepper from "./components/registrationWrapper.jsx";
 import BundleService from "./components/BundleService.jsx";
+import { ServiceDetailPage } from "./components/newService.jsx";
 
 // Layout component to handle navbar and footer
 const Layout = ({ children }) => {
@@ -130,6 +131,10 @@ function App() {
               <Route
                 path="/getStarted/:categoryId"
                 element={<BookingStepper />}
+              />
+                <Route
+                path="/service-detail/:serviceId/:categoryId"
+                element={<ServiceDetailPage />}
               />
 
               <Route path="/blog/:blogId" element={<BlogDetail />} />

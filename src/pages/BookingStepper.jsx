@@ -17,8 +17,9 @@ const BookingPage = () => {
 
     if (routeCategoryId) {
       const category = serviceCategories.find(cat => cat.id === routeCategoryId);
+      const selectedService=category.services.find((ser)=>ser.id.toString()===serviceId.toString());
       if (category && category.services.length > 0) {
-        setSelectedService({...category.services[0],categoryTitle:category.title}); 
+        setSelectedService({...selectedService,categoryTitle:category.title}); 
         setBookingStep(3); 
             window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -48,6 +49,7 @@ console.log({selectedService},"selectedServiceselectedService")
       setBookingStep={setBookingStep}
       handleBackToHome={handleBackToHome}
       handleBackToCategory={handleBackToCategory}
+      routeCategoryId={routeCategoryId}
     />
   );
 };
