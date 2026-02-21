@@ -111,7 +111,9 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/expert" element={<ExpertRegistration />} />
               {/* New Login and Dashboard Routes */}
-              <Route path="/login" element={<LoginForm />} />
+              {/* <Route path="/login" element={<LoginForm />} /> */}
+              <Route path="/login" element={<AdminLogin />} />
+
               <Route path="/admin-login" element={<AdminLogin />} />
               
               {/* Dashboard Routes */}
