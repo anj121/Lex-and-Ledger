@@ -5,63 +5,90 @@ import {
   Container,
   Typography,
   Box,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  FormLabel,
   Paper,
   Grid,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Signup = () => {
-  const [userType, setUserType] = useState("user");
+  const navigate = useNavigate();
+
+  const [userType] = useState("user");
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     mobile: "",
-    expertise: "",
   });
-const navigate=useNavigate()
+
   const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    validate({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleUserTypeChange = (e) => {
-    setUserType(e.target.value);
-  };
 
   const validate = (values) => {
     let newErrors = {};
+
     if (!values.firstName) newErrors.firstName = "First name is required";
     if (!values.lastName) newErrors.lastName = "Last name is required";
+
     if (!values.email) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
       newErrors.email = "Invalid email format";
     }
+
     if (!values.mobile) {
       newErrors.mobile = "Mobile number is required";
     } else if (!/^\d{10}$/.test(values.mobile)) {
       newErrors.mobile = "Invalid mobile number";
     }
-    if (userType === "expert" && !values.expertise) {
-      newErrors.expertise = "Expertise ID is required";
-    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const updated = { ...formData, [e.target.name]: e.target.value };
+    setFormData(updated);
+    validate(updated);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate(formData)) {
-      console.log("Form Submitted", formData);
-      navigate("/otp")
+
+    if (!validate(formData)) return;
+
+    try {
+      setLoading(true);
+      setApiError("");
+
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.mobile,
+        username: formData.email.split("@")[0], // auto username
+        password: "Temp@12345", // temp password (OTP ke baad change)
+        role: userType,
+      };
+
+      await axios.post(
+        `http://localhost:5000/api/auth/register`,
+        payload
+      );
+
+      navigate("/otp", {
+        state: { email: formData.email },
+      });
+    } catch (error) {
+      setApiError(
+        error?.response?.data?.message || "Signup failed. Try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,21 +99,18 @@ const navigate=useNavigate()
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-       
         background: "linear-gradient(to right, #F4F4F4, #D9D9D9)",
-
         padding: 2,
       }}
     >
-      <Container maxWidth="md">
+      <Container className="!max-w-[767px]">
         <Paper elevation={6} sx={{ borderRadius: 4 }}>
-          <Grid container spacing={0}>
+          <Grid container>
             <Grid
               item
               xs={12}
-              md={5}
+              md={6}
               sx={{
-                background: "#0b0e2a",
                 color: "white",
                 padding: 4,
                 display: "flex",
@@ -94,41 +118,27 @@ const navigate=useNavigate()
                 justifyContent: "center",
                 borderTopLeftRadius: 16,
                 borderBottomLeftRadius: 16,
+                background: "linear-gradient(to right, #2563eb, #4f46e5)",
               }}
             >
               <Typography variant="h4" fontWeight="bold" gutterBottom>
                 Welcome!
               </Typography>
-              <Typography variant="body1" gutterBottom>
+              <Typography>
                 Join our community and explore new opportunities.
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                Sign up to get started and gain access to exclusive features.
               </Typography>
             </Grid>
 
-            <Grid item xs={12} md={7} sx={{ padding: 4 }}>
-              <Typography variant="h4" fontWeight="bold" color="#333" gutterBottom>
+            <Grid item xs={12} md={6} sx={{ padding: 4 }}>
+              <Typography variant="h4" fontWeight="bold" gutterBottom>
                 Create Account
               </Typography>
 
-              {/* <FormControl component="fieldset" sx={{ mb: 2 }}>
-                <FormLabel component="legend" sx={{ fontWeight: "bold", color: "#0b0e2a" }}>
-                  Select Account Type
-                </FormLabel>
-                <RadioGroup row value={userType} onChange={handleUserTypeChange}>
-                  <FormControlLabel
-                    value="user"
-                    control={<Radio sx={{ color: "#0b0e2a" }} />}
-                    label="User"
-                  />
-                  <FormControlLabel
-                    value="expert"
-                    control={<Radio sx={{ color: "#0b0e2a" }} />}
-                    label="Expert"
-                  />
-                </RadioGroup>
-              </FormControl> */}
+              {apiError && (
+                <Typography color="error" mb={2}>
+                  {apiError}
+                </Typography>
+              )}
 
               <Box display="grid" gap={2}>
                 <TextField
@@ -156,16 +166,6 @@ const navigate=useNavigate()
                   error={!!errors.email}
                   helperText={errors.email}
                 />
-                {userType === "expert" && (
-                  <TextField
-                    label="Expertise ID"
-                    name="expertise"
-                    fullWidth
-                    onChange={handleChange}
-                    error={!!errors.expertise}
-                    helperText={errors.expertise}
-                  />
-                )}
                 <TextField
                   label="Mobile Number"
                   name="mobile"
@@ -174,14 +174,15 @@ const navigate=useNavigate()
                   error={!!errors.mobile}
                   helperText={errors.mobile}
                 />
+
                 <Button
                   variant="contained"
                   fullWidth
                   sx={{ mt: 2, bgcolor: "#FF8C00" }}
                   onClick={handleSubmit}
-                  disabled={Object.keys(errors).length > 0 || !formData.firstName || !formData.lastName || !formData.email || !formData.mobile || (userType === "expert" && !formData.expertise)}
+                  disabled={loading}
                 >
-                  Sign Up
+                  {loading ? <CircularProgress size={24} /> : "Sign Up"}
                 </Button>
               </Box>
             </Grid>

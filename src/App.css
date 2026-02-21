@@ -134,6 +134,7 @@
   transition: transform 0.2s ease, background-color 0.2s ease;
   border: none;
   cursor: pointer;
+  z-index: 9;
 }
 
 .emergency-button:hover {
@@ -620,3 +621,15 @@
   }
 }
 
+.custom-client-drag-shadow {
+  box-shadow: 0px 8px 32px 0px rgba(0, 0, 0, 0.15), 0px 4px 16px 0px rgba(0, 0, 0, 0.1);
+}
+.scrollbar-hide {
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

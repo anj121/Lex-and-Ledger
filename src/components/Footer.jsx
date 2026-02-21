@@ -126,8 +126,8 @@ const Footer = () => {
               <li>
                 <Link
                   to="/privacy"
-                  target="_blank"
-  rel="noopener noreferrer" 
+                  // target="_blank"
+  // rel="noopener noreferrer" 
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Privacy Policy
@@ -136,8 +136,8 @@ const Footer = () => {
               <li>
                 <Link
 
-                target="_blank"
-  rel="noopener noreferrer" 
+                // target="_blank"
+  // rel="noopener noreferrer" 
                   to="/terms"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
@@ -155,8 +155,8 @@ const Footer = () => {
               <li>
                 <Link
                   to="/refund"
-                  target="_blank"
-  rel="noopener noreferrer" 
+                  // target="_blank"
+  // rel="noopener noreferrer" 
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Refund Policy

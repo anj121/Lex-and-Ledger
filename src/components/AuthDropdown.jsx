@@ -1,4 +1,4 @@
-import { ChevronDown, LogIn, UserPlus, UserCog } from "lucide-react";
+import { ChevronDown, LogIn, UserPlus, UserCog, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -32,13 +32,21 @@ export default function AuthDropdown() {
 
       {showDropdown && (
         <div className="absolute right-0 mt-2 w-60 bg-white text-gray-800 rounded-xl shadow-xl py-2 z-50 transition-all">
-          <Link
+          {/* <Link
             to="/login?role=expert"
             onClick={() => setShowDropdown(false)}
             className="flex items-center gap-3 px-5 py-3 hover:bg-gray-100 transition-colors"
           >
             <LogIn className="w-4 h-4 text-blue-500" />
             <span>Login</span>
+          </Link> */}
+          <Link
+            to="/admin-login"
+            onClick={() => setShowDropdown(false)}
+            className="flex items-center gap-3 px-5 py-3 hover:bg-gray-100 transition-colors"
+          >
+            <User className="w-4 h-4 text-blue-500" />
+            <span>Admin Login</span>
           </Link>
 
           <Link

@@ -22,7 +22,6 @@ const ServiceCategoryGrid = ({ serviceCategories }) => {
             const visibleServices = isExpanded
               ? category.services
               : category.services.slice(0, 5);
-
             return (
               <div key={category.id}>
                 <h3 className="text-white-600 text-lg font-semibold mb-1">
@@ -37,7 +36,7 @@ const ServiceCategoryGrid = ({ serviceCategories }) => {
                         to={
                           category.id === "immediate"
                             ? "/immediate-service"
-                            : `/getStarted/${category.id}`
+                            : `/getStarted/${category.id}/${service.id}`
                         }
                         className="hover:underline"
                         target="_blank"

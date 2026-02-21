@@ -18,6 +18,7 @@ import BlogDetail from "./pages/BlogDetail.jsx";
 import "./App.css";
 import Old from "./pages/old.jsx";
 import BundlePage from "./pages/BundlePage.jsx";
+import BundleDetail from "./pages/BundleDetail.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import BookingStepper from "./pages/BookingStepper.jsx";
 import ServicesPage from "./pages/ServicesPage.jsx";
@@ -30,7 +31,10 @@ import ExpertRegistration from "./components/ExpertRegistration.jsx";
 import Login from "./pages/login.jsx";
 import Signup from "./pages/signup.jsx";
 import OTPVerification from "./pages/otp.jsx";
+import AdminLogin from "./pages/AdminLogin.jsx";
 import AdminPanel from "./pages/AdminPanel.jsx";
+import LoginForm from "./components/LoginForm.jsx";
+import Dashboard from "./components/Dashboard.jsx";
 import ProfileVerification from "./components/ProfileVerification.jsx";
 import PaySubscription from "./components/PaySubscription.jsx";
 import BankDetails from "./components/BankDetails.jsx";
@@ -44,6 +48,9 @@ import { Box, Container } from "@mui/material";
 import RegistrationStepper from "./components/registrationWrapper.jsx";
 import BundleService from "./components/BundleService.jsx";
 import { ServiceDetailPage } from "./components/newService.jsx";
+import DocWithComments from "./components/doc.jsx";
+import ExcelCommentsUploader from "./components/ExcelCommentsUploader.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 // Layout component to handle navbar and footer
 const Layout = ({ children }) => {
@@ -103,14 +110,35 @@ function App() {
               <Route path="/old" element={<Old />} />
               <Route path="/about" element={<About />} />
               <Route path="/expert" element={<ExpertRegistration />} />
-              <Route path="/dashboard" element={<AdminPanel />} />
-              <Route path="/login" element={<Login />} />
+              {/* New Login and Dashboard Routes */}
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/admin-login" element={<AdminLogin />} />
+              
+              {/* Dashboard Routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <AdminPanel />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/signup" element={<Signup />} />
               <Route path="/otp" element={<OTPVerification />} />
 
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/refund" element={<Refund />} />
+              <Route path="/doc" element={<ExcelCommentsUploader />} />
+
 
               {/* Service Routes */}
               <Route path="/services" element={<ServicesPage />} />
@@ -126,10 +154,11 @@ function App() {
               {/* Catch-all route - redirect to home */}
               <Route path="*" element={<HomePage />} />
               <Route path="/bundles" element={<BundlePage />} />
+              <Route path="/bundles/:bundleId" element={<BundleDetail />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/getStarted" element={<BookingStepper />} />
               <Route
-                path="/getStarted/:categoryId"
+                path="/getStarted/:categoryId/:serviceId"
                 element={<BookingStepper />}
               />
                 <Route

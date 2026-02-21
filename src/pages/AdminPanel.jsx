@@ -4,39 +4,47 @@ import { Input } from '@/components/ui/input.jsx'
 import { Textarea } from '@/components/ui/textarea.jsx'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
+import ServiceManagement from '../components/ServiceManagement.jsx'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
-  LayoutDashboard,
-  Users,
-  FileText,
-  Shield,
-  CreditCard,
-  UserCheck,
-  Upload,
-  Search,
-  Filter,
-  MoreHorizontal,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Eye,
-  Download,
-  RefreshCw,
-  Settings,
-  LogOut,
-  Bell,
-  Home,
-  ArrowLeft,
-  Plus,
-  Edit,
-  Trash2,
-  Calendar,
-  TrendingUp,
-  AlertTriangle,
-  CheckSquare,
-  X
-} from 'lucide-react'
+  faHome, 
+  faGavel, 
+  faBoxes, 
+  faBookOpen, 
+  faEnvelope,
+  faBars,
+  faDashboard,
+  faUsers,
+  faFileAlt,
+  faShieldAlt,
+  faCreditCard,
+  faUserCheck,
+  faUpload,
+  faSearch,
+  faFilter,
+  faEllipsisH,
+  faCheckCircle,
+  faTimesCircle,
+  faClock,
+  faEye,
+  faDownload,
+  faSync,
+  faCog,
+  faSignOutAlt,
+  faBell,
+  faArrowLeft,
+  faPlus,
+  faEdit,
+  faTrash,
+  faCalendar,
+  faChartLine,
+  faExclamationTriangle,
+  faCheckSquare,
+  faTimes
+} from "@fortawesome/free-solid-svg-icons"
+import BundleManagement from '@/components/BundleManagement.jsx'
 
-const AdminPanel = ({ onBackToHome }) => {
+const AdminPanel = () => {
   const [currentSection, setCurrentSection] = useState('dashboard')
   const [dashboardData, setDashboardData] = useState(null)
   const [users, setUsers] = useState([])
@@ -154,29 +162,43 @@ const AdminPanel = ({ onBackToHome }) => {
 
   // Handle section change
   const handleSectionChange = (section) => {
-    setCurrentSection(section)
-    switch (section) {
-      case 'dashboard':
-        fetchDashboard()
-        break
-      case 'users':
-        fetchUsers()
-        break
-      case 'documents':
-        fetchDocuments()
-        break
-      case 'ca-verification':
-        fetchCAVerifications()
-        break
-      case 'id-verification':
-        fetchIDProofs()
-        break
-      case 'subscriptions':
-        fetchSubscriptions()
-        break
-      case 'activities':
-        fetchActivities()
-        break
+    try {
+      setCurrentSection(section)
+      setLoading(true)
+      
+      switch (section) {
+        case 'dashboard':
+          fetchDashboard()
+          break
+        case 'services':
+          // Services are handled by ServiceManagement component
+          setLoading(false)
+          break
+        case 'users':
+          fetchUsers()
+          break
+        case 'documents':
+          fetchDocuments()
+          break
+        case 'ca-verification':
+          fetchCAVerifications()
+          break
+        case 'id-verification':
+          fetchIDProofs()
+          break
+        case 'subscriptions':
+          fetchSubscriptions()
+          break
+        case 'activities':
+          fetchActivities()
+          break
+        default:
+          console.warn('Unknown section:', section)
+          setLoading(false)
+      }
+    } catch (error) {
+      console.error('Error changing section:', error)
+      setLoading(false)
     }
   }
 
@@ -265,13 +287,16 @@ const AdminPanel = ({ onBackToHome }) => {
 
   // Sidebar navigation
   const sidebarItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'users', label: 'Users', icon: Users },
-    { id: 'documents', label: 'Documents', icon: FileText },
-    { id: 'ca-verification', label: 'CA Verification', icon: Shield },
-    { id: 'id-verification', label: 'ID Verification', icon: UserCheck },
-    { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
-    { id: 'activities', label: 'Activity Logs', icon: Clock }
+    { id: 'dashboard', label: 'Dashboard', icon: faDashboard },
+    { id: 'services', label: 'Services', icon: faGavel },
+    { id: 'bundles', label: 'Bundles', icon: faGavel },
+
+    { id: 'users', label: 'Users', icon: faUsers },
+    { id: 'documents', label: 'Documents', icon: faFileAlt },
+    { id: 'ca-verification', label: 'CA Verification', icon: faShieldAlt },
+    { id: 'id-verification', label: 'ID Verification', icon: faUserCheck },
+    { id: 'subscriptions', label: 'Subscriptions', icon: faCreditCard },
+    { id: 'activities', label: 'Activity Logs', icon: faClock }
   ]
 
   // Dashboard section
@@ -279,15 +304,15 @@ const AdminPanel = ({ onBackToHome }) => {
     <div className="space-y-6 my-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <Button onClick={() => fetchDashboard()} className="bg-blue-600 hover:bg-blue-700">
-          <RefreshCw className="w-4 h-4 mr-2" />
+        <Button onClick={() => fetchDashboard()} className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300">
+          <FontAwesomeIcon icon={faSync} className="w-4 h-4 mr-2" />
           Refresh
         </Button>
       </div>
 
       {/* Metrics Cards */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-0 bg-gradient-to-r from-blue-50 to-blue-100">
+        <Card className="border-0 bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -296,12 +321,12 @@ const AdminPanel = ({ onBackToHome }) => {
                   {dashboardData?.metrics?.total_users || 0}
                 </p>
               </div>
-              <Users className="h-8 w-8 text-blue-600" />
+              <FontAwesomeIcon icon={faUsers} className="h-8 w-8 text-blue-600" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-to-r from-yellow-50 to-yellow-100">
+        <Card className="border-0 bg-gradient-to-r from-yellow-50 to-yellow-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -310,12 +335,12 @@ const AdminPanel = ({ onBackToHome }) => {
                   {dashboardData?.metrics?.pending_verifications || 0}
                 </p>
               </div>
-              <Clock className="h-8 w-8 text-yellow-600" />
+              <FontAwesomeIcon icon={faClock} className="h-8 w-8 text-yellow-600" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-to-r from-green-50 to-green-100">
+        <Card className="border-0 bg-gradient-to-r from-green-50 to-green-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -324,12 +349,12 @@ const AdminPanel = ({ onBackToHome }) => {
                   {dashboardData?.metrics?.active_subscriptions || 0}
                 </p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
+              <FontAwesomeIcon icon={faChartLine} className="h-8 w-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-to-r from-purple-50 to-purple-100">
+        <Card className="border-0 bg-gradient-to-r from-purple-50 to-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -338,7 +363,7 @@ const AdminPanel = ({ onBackToHome }) => {
                   {dashboardData?.metrics?.total_documents || 0}
                 </p>
               </div>
-              <FileText className="h-8 w-8 text-purple-600" />
+              <FontAwesomeIcon icon={faFileAlt} className="h-8 w-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -376,11 +401,11 @@ const AdminPanel = ({ onBackToHome }) => {
         <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
         <div className="flex gap-2">
           <Button variant="outline">
-            <Filter className="w-4 h-4 mr-2" />
+            <FontAwesomeIcon icon={faFilter} className="w-4 h-4 mr-2" />
             Filter
           </Button>
           <Button onClick={() => fetchUsers()} className="bg-blue-600 hover:bg-blue-700">
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <FontAwesomeIcon icon={faSync} className="w-4 h-4 mr-2" />
             Refresh
           </Button>
         </div>
@@ -434,7 +459,7 @@ const AdminPanel = ({ onBackToHome }) => {
                           setShowModal(true)
                         }}
                       >
-                        <Eye className="w-4 h-4" />
+                        <FontAwesomeIcon icon={faEye} className="w-4 h-4" />
                       </Button>
                     </td>
                   </tr>
@@ -453,20 +478,20 @@ const AdminPanel = ({ onBackToHome }) => {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Document Management</h1>
         <div className="flex gap-2">
-          <Button 
-            onClick={() => {
-              setModalType('upload-document')
-              setShowModal(true)
-            }}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <Upload className="w-4 h-4 mr-2" />
-            Upload
-          </Button>
-          <Button onClick={() => fetchDocuments()} className="bg-blue-600 hover:bg-blue-700">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </Button>
+                      <Button 
+              onClick={() => {
+                setModalType('upload-document')
+                setShowModal(true)
+              }}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <FontAwesomeIcon icon={faUpload} className="w-4 h-4 mr-2" />
+              Upload
+            </Button>
+                      <Button onClick={() => fetchDocuments()} className="bg-blue-600 hover:bg-blue-700">
+              <FontAwesomeIcon icon={faSync} className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
         </div>
       </div>
 
@@ -516,7 +541,7 @@ const AdminPanel = ({ onBackToHome }) => {
                             setShowModal(true)
                           }}
                         >
-                          <CheckCircle className="w-4 h-4" />
+                          <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4" />
                         </Button>
                         <Button 
                           variant="outline" 
@@ -527,7 +552,7 @@ const AdminPanel = ({ onBackToHome }) => {
                             setShowModal(true)
                           }}
                         >
-                          <XCircle className="w-4 h-4" />
+                          <FontAwesomeIcon icon={faTimesCircle} className="w-4 h-4" />
                         </Button>
                       </div>
                     </td>
@@ -554,11 +579,11 @@ const AdminPanel = ({ onBackToHome }) => {
             }}
             className="bg-green-600 hover:bg-green-700"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2" />
             Verify CA
           </Button>
           <Button onClick={() => fetchCAVerifications()} className="bg-blue-600 hover:bg-blue-700">
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <FontAwesomeIcon icon={faSync} className="w-4 h-4 mr-2" />
             Refresh
           </Button>
         </div>
@@ -614,7 +639,7 @@ const AdminPanel = ({ onBackToHome }) => {
             }}
             className="bg-green-600 hover:bg-green-700"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2" />
             Verify Aadhar
           </Button>
           <Button 
@@ -624,11 +649,11 @@ const AdminPanel = ({ onBackToHome }) => {
             }}
             className="bg-purple-600 hover:bg-purple-700"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2" />
             Verify PAN
           </Button>
           <Button onClick={() => fetchIDProofs()} className="bg-blue-600 hover:bg-blue-700">
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <FontAwesomeIcon icon={faSync} className="w-4 h-4 mr-2" />
             Refresh
           </Button>
         </div>
@@ -677,7 +702,7 @@ const AdminPanel = ({ onBackToHome }) => {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Subscription Management</h1>
         <Button onClick={() => fetchSubscriptions()} className="bg-blue-600 hover:bg-blue-700">
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <FontAwesomeIcon icon={faSync} className="w-4 h-4 mr-2" />
           Refresh
         </Button>
       </div>
@@ -723,6 +748,41 @@ const AdminPanel = ({ onBackToHome }) => {
     </div>
   )
 
+  // Activities section
+  const renderActivities = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900">Activity Logs</h1>
+        <Button onClick={() => fetchActivities()} className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300">
+          <FontAwesomeIcon icon={faSync} className="w-4 h-4 mr-2" />
+          Refresh
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activities</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {activities.slice(0, 10).map((activity, index) => (
+              <div key={index} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">{activity.action || 'System Activity'}</p>
+                  <p className="text-xs text-gray-500">{activity.description || 'No description available'}</p>
+                </div>
+                <p className="text-xs text-gray-400">
+                  {activity.timestamp ? new Date(activity.timestamp).toLocaleString() : 'N/A'}
+                </p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+
   // Modal component
   const renderModal = () => {
     if (!showModal) return null
@@ -746,7 +806,7 @@ const AdminPanel = ({ onBackToHome }) => {
               {modalType === 'user-details' && 'User Details'}
             </h3>
             <Button variant="outline" size="sm" onClick={() => setShowModal(false)}>
-              <X className="w-4 h-4" />
+              <FontAwesomeIcon icon={faTimes} className="w-4 h-4" />
             </Button>
           </div>
 
@@ -904,96 +964,84 @@ const AdminPanel = ({ onBackToHome }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <LayoutDashboard className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h2 className="font-semibold text-gray-900">Admin Panel</h2>
-              <p className="text-xs text-gray-500">Lex&Ledger</p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="flex">
+        {/* Professional Sidebar */}
+        <div className="w-80 bg-white/95 backdrop-blur-xl border-r border-gray-200/50 shadow-xl flex flex-col h-screen">
+          {/* Sidebar Header - Aligned with Navbar Logo */}
+          <div className="pt-4 pb-6 px-6 border-b border-gray-200/50">
+            {/* <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-slate-900 via-blue-800 to-indigo-800 rounded-xl flex items-center justify-center shadow-lg">
+                <FontAwesomeIcon icon={faDashboard} className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
+                <p className="text-xs text-gray-500">Lex&Ledger</p>
+              </div>
+            </div> */}
           </div>
+
+          {/* Navigation - Full Height */}
+          <nav className="flex-1 p-6">
+            <div className="space-y-2">
+              {sidebarItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleSectionChange(item.id)}
+                  className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-left transition-all duration-300 ${
+                    currentSection === item.id
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
+                      : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700 hover:shadow-md'
+                  }`}
+                >
+                  <FontAwesomeIcon 
+                    icon={item.icon} 
+                    className={`w-5 h-5 transition-all duration-300 ${
+                      currentSection === item.id ? 'text-white' : 'text-gray-500'
+                    }`} 
+                  />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-2">
-            {sidebarItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleSectionChange(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                  currentSection === item.id
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200">
-          {/* <Button
-            variant="outline"
-            onClick={onBackToHome}
-            className="w-full justify-start"
-          >
-            <Home className="w-4 h-4 mr-2" />
-            Back to Home
-          </Button> */}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        {/* <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm" onClick={onBackToHome}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Home
-              </Button>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm">
-                <Bell className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="sm">
-                <Settings className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="sm">
-                <LogOut className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        </header> */}
-
-        {/* Content Area */}
-        <main className="flex-1 p-6 overflow-auto">
+        {/* Main Content - Full Height */}
+        <div className="flex-1 pt-4 px-10 pb-10 flex flex-col h-screen">
           {loading && (
-            <div className="flex items-center justify-center py-12">
-              <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
-              <span className="ml-2 text-gray-600">Loading...</span>
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-xl mb-6">
+                  <FontAwesomeIcon icon={faSync} className="w-8 h-8 animate-spin text-white" />
+                </div>
+                <p className="text-gray-700 text-xl font-medium">Loading admin data...</p>
+                <p className="text-gray-500 text-sm mt-2">Please wait while we fetch your data</p>
+              </div>
             </div>
           )}
 
           {!loading && currentSection === 'dashboard' && renderDashboard()}
+          {!loading && currentSection === 'services' && <ServiceManagement />}
+          {!loading && currentSection === 'bundles' && <BundleManagement />}
+
           {!loading && currentSection === 'users' && renderUsers()}
           {!loading && currentSection === 'documents' && renderDocuments()}
           {!loading && currentSection === 'ca-verification' && renderCAVerification()}
           {!loading && currentSection === 'id-verification' && renderIDVerification()}
           {!loading && currentSection === 'subscriptions' && renderSubscriptions()}
-        </main>
+          {!loading && currentSection === 'activities' && renderActivities()}
+
+          {/* Footer Area - Clean and Simple */}
+          <div className="mt-auto p-6 border-t border-gray-200/50">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-slate-800 via-blue-800 to-indigo-800 rounded-lg flex items-center justify-center">
+                <FontAwesomeIcon icon={faDashboard} className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-sm text-gray-600">Admin Portal v1.0</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Modal */}

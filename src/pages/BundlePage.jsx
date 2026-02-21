@@ -1,10 +1,35 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faCheckCircle,
+  faStar,
+  faClock,
+  faUsers,
+  faShield,
+  faArrowRight,
+  faPhone,
+  faEnvelope,
+  faMapMarkerAlt,
+  faAward,
+  faRocket,
+  faBuilding,
+  faFileText,
+  faCalculator,
+  faGavel,
+  faGlobe,
+  faBookOpen,
+  faZap
+} from "@fortawesome/free-solid-svg-icons";
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Button } from '@/components/ui/button.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
-import { Check, Star, Clock, Users, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const BundlePage = () => {
+  const navigate = useNavigate();
+  
   const bundles = [
     {
       id: 1,
@@ -14,6 +39,8 @@ const BundlePage = () => {
       savings: "₹10,000",
       duration: "15-20 days",
       popular: true,
+      icon: faRocket,
+      color: "from-blue-500 to-purple-600",
       description: "Everything you need to start your business legally and compliantly",
       features: [
         "Company Formation & Registration",
@@ -41,6 +68,8 @@ const BundlePage = () => {
       savings: "₹20,000",
       duration: "20-25 days",
       popular: false,
+      icon: faBuilding,
+      color: "from-green-500 to-emerald-600",
       description: "Comprehensive solution for growing businesses with advanced compliance needs",
       features: [
         "All Startup Essentials features",
@@ -68,6 +97,8 @@ const BundlePage = () => {
       savings: "₹40,000",
       duration: "30-45 days",
       popular: false,
+      icon: faAward,
+      color: "from-purple-500 to-pink-600",
       description: "Full-service package for established businesses and enterprises",
       features: [
         "All Growth Business features",
@@ -95,6 +126,8 @@ const BundlePage = () => {
       savings: "₹10,000",
       duration: "10-15 days",
       popular: false,
+      icon: faCalculator,
+      color: "from-orange-500 to-red-600",
       description: "Comprehensive tax compliance and planning services",
       features: [
         "Income Tax Return Filing",
@@ -122,6 +155,8 @@ const BundlePage = () => {
       savings: "₹15,000",
       duration: "15-20 days",
       popular: false,
+      icon: faGavel,
+      color: "from-indigo-500 to-blue-600",
       description: "Complete legal protection and documentation for your business",
       features: [
         "Contract Drafting & Review",
@@ -149,6 +184,8 @@ const BundlePage = () => {
       savings: "₹7,000",
       duration: "7-10 days",
       popular: false,
+      icon: faZap,
+      color: "from-yellow-500 to-orange-600",
       description: "Fast-track business setup for immediate market entry",
       features: [
         "Express Company Registration",
@@ -169,153 +206,200 @@ const BundlePage = () => {
       ]
     }
   ];
- React.useEffect(() => {
+
+  React.useEffect(() => {
     window.scrollTo(0, 0); 
   }, []);
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-4">
-            Service Bundles
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive packages designed to meet your business needs at every stage. 
-            Save money and time with our carefully curated service combinations.
-          </p>
-        </div>
 
-        {/* Benefits Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="text-center p-6">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="h-8 w-8 text-blue-600" />
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 via-blue-800 to-indigo-800 rounded-xl flex items-center justify-center shadow-lg">
+                <FontAwesomeIcon icon={faAward} className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                Service Bundles
+              </h1>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Complete Protection</h3>
-            <p className="text-gray-600">Comprehensive legal and financial coverage for your business</p>
-          </div>
-          <div className="text-center p-6">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="h-8 w-8 text-green-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Expert Support</h3>
-            <p className="text-gray-600">Dedicated team of CAs and lawyers for ongoing assistance</p>
-          </div>
-          <div className="text-center p-6">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Clock className="h-8 w-8 text-purple-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Time Efficient</h3>
-            <p className="text-gray-600">Streamlined processes to get your business running quickly</p>
-          </div>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Comprehensive packages designed to meet your business needs at every stage. 
+              Save money and time with our carefully curated service combinations.
+            </p>
+          </motion.div>
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* Bundles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {bundles.map((bundle) => (
-            <Card 
-              key={bundle.id} 
-              className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${
-                bundle.popular ? 'ring-2 ring-blue-500 shadow-lg' : 'hover:shadow-lg'
-              }`}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
+        >
+          {bundles.map((bundle, index) => (
+            <motion.div
+              key={bundle.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              {bundle.popular && (
-                <div className="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 text-sm font-semibold rounded-bl-lg">
-                  <Star className="w-4 h-4 inline mr-1" />
-                  Most Popular
-                </div>
-              )}
-              
-              <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold text-gray-900 mb-2">
-                  {bundle.name}
-                </CardTitle>
-                <p className="text-gray-600 text-sm mb-4">{bundle.description}</p>
+              <Card 
+                className={`relative overflow-hidden transition-all duration-500 hover:shadow-2xl cursor-pointer border-0 bg-white/90 backdrop-blur-sm hover:bg-white h-full ${
+                  bundle.popular ? 'ring-2 ring-blue-500 shadow-xl' : 'hover:shadow-lg'
+                }`}
+                onClick={() => navigate(`/bundles/${bundle.id}`)}
+              >
+                {/* {bundle.popular && (
+                  <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 text-sm font-semibold rounded-lg">
+                    <FontAwesomeIcon icon={faStar} className="w-4 h-4 inline mr-1" />
+                    Most Popular
+                  </div>
+                )} */}
                 
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-3xl font-bold text-gray-900">{bundle.price}</span>
-                  <span className="text-lg text-gray-500 line-through">{bundle.originalPrice}</span>
-                </div>
-                <Badge variant="secondary" className="bg-green-100 text-green-700 w-fit">
-                  Save {bundle.savings}
-                </Badge>
-                
-                <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-                  <Clock className="w-4 h-4" />
-                  <span>{bundle.duration}</span>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="pt-0">
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Key Features:</h4>
-                    <ul className="space-y-1">
-                      {bundle.features.slice(0, 4).map((feature, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm text-gray-600">
-                          <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                      {bundle.features.length > 4 && (
-                        <li className="text-sm text-gray-500 italic">
-                          +{bundle.features.length - 4} more features
-                        </li>
-                      )}
-                    </ul>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${bundle.color} flex items-center justify-center shadow-lg`}>
+                      <FontAwesomeIcon icon={bundle.icon} className="h-7 w-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="text-xl font-bold text-gray-900 mb-2">
+                        {bundle.name}
+                      </CardTitle>
+                      <p className="text-gray-600 text-sm">{bundle.description}</p>
+                    </div>
                   </div>
                   
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Package Includes:</h4>
-                    <ul className="space-y-1">
-                      {bundle.includes.map((item, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm text-gray-600">
-                          <Check className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-3xl font-bold text-gray-900">{bundle.price}</span>
+                    <span className="text-lg text-gray-500 line-through">{bundle.originalPrice}</span>
                   </div>
-                </div>
+                  <Badge variant="secondary" className="bg-green-100 text-green-700 w-fit">
+                    Save {bundle.savings}
+                  </Badge>
+                  
+                  <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                    <FontAwesomeIcon icon={faClock} className="w-4 h-4" />
+                    <span>{bundle.duration}</span>
+                  </div>
+                </CardHeader>
                 
-                <div className="mt-6 space-y-2">
-                  <Button 
-                    className={`w-full ${
-                      bundle.popular 
-                        ? 'bg-blue-600 hover:bg-blue-700' 
-                        : 'bg-gray-900 hover:bg-gray-800'
-                    }`}
-                  >
-                    Choose This Bundle
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    View Details
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                <CardContent className="pt-0 flex flex-col h-full">
+                  <div className="space-y-4 mb-6 flex-1">
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-3">Key Features:</h4>
+                      <ul className="space-y-2">
+                        {bundle.features.slice(0, 4).map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
+                            <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                        {bundle.features.length > 4 && (
+                          <li className="text-sm text-gray-500 italic">
+                            +{bundle.features.length - 4} more features
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Button 
+                      className={`w-full h-12 text-lg font-semibold transition-all duration-300 ${
+                        bundle.popular 
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white' 
+                          : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-blue-600 hover:to-purple-600 hover:text-white'
+                      }`}
+                    >
+                      Choose This Bundle
+                      <FontAwesomeIcon icon={faArrowRight} className="h-4 w-4 ml-2" />
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      View Details
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
+        
+        {/* Benefits Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+        >
+          <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FontAwesomeIcon icon={faShield} className="h-8 w-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Complete Protection</h3>
+            <p className="text-gray-600">Comprehensive legal and financial coverage for your business</p>
+          </div>
+          <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FontAwesomeIcon icon={faUsers} className="h-8 w-8 text-green-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Expert Support</h3>
+            <p className="text-gray-600">Dedicated team of CAs and lawyers for ongoing assistance</p>
+          </div>
+          <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg">
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FontAwesomeIcon icon={faClock} className="h-8 w-8 text-purple-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Time Efficient</h3>
+            <p className="text-gray-600">Streamlined processes to get your business running quickly</p>
+          </div>
+        </motion.div>
 
         {/* CTA Section */}
-        <div className="mt-16 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Need a Custom Bundle?
-          </h2>
-          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Can't find the perfect bundle for your needs? Our experts can create a customized 
-            package tailored specifically for your business requirements.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-              Request Custom Bundle
-            </Button>
-            <Button size="lg" variant="outline">
-              Speak with Expert
-            </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 rounded-3xl p-12 text-center relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="relative">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                <FontAwesomeIcon icon={faPhone} className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-4xl font-bold text-white">
+                Need a Custom Bundle?
+              </h2>
+            </div>
+            <p className="text-gray-300 text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
+              Can't find the perfect bundle for your needs? Our experts can create a customized 
+              package tailored specifically for your business requirements.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 text-lg font-semibold h-14">
+                <FontAwesomeIcon icon={faPhone} className="w-5 h-5 mr-2" />
+                Request Custom Bundle
+              </Button>
+              <Button size="lg" variant="outline" className="border-white text-gray-900 hover:bg-white hover:text-gray-900 px-8 py-4 text-lg font-semibold h-14">
+                <FontAwesomeIcon icon={faEnvelope} className="w-5 h-5 mr-2" />
+                Speak with Expert
+              </Button>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

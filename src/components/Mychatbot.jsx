@@ -275,7 +275,6 @@ const MyChatBot = () => {
       ]
     }
   ];
-console.log({form},"===================form")
   const flow = {
     start: {
       message: "👋 Welcome to Lex&Ledger! Let's get started. What is your name?",
@@ -520,7 +519,7 @@ console.log({form},"===================form")
             {selectedCategory?.services.map((service, index) => (
               <div key={service.id} style={{ marginBottom: 8 }}>
                 <a
-                                  href={`/getStarted/${selectedCategory.id}`}
+                                  // href={`/getStarted/${selectedCategory.id}`}
 
                   target="_blank"
                   rel="noopener noreferrer"
@@ -609,7 +608,16 @@ console.log({form},"===================form")
     }
   };
 
-  return <ChatBot flow={flow} />;
+  return <ChatBot flow={flow}     settings={{
+      // general: {
+      //   embedded: true
+      // },
+      header: {
+        title: "Lex&Ledger Assistant",
+        showAvatar: true
+      }
+    }}
+/>;
 };
 
 export default MyChatBot;

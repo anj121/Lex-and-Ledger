@@ -52,6 +52,7 @@ const OTPVerification = () => {
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
+            localStorage.setItem("isLoggedIn",true)
     }
   };
 

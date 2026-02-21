@@ -71,12 +71,12 @@ onClick={() => {
         )}
 
       {/* Slider */}
-      <div ref={sliderRef} className="keen-slider mb-6">
+      <div ref={sliderRef} className="keen-slider mb-6 py-5">
         {serviceCategories.map((category) => (
-          <div key={category.id} className="keen-slider__slide">
+          <div key={category.id} className="keen-slider__slide !overflow-[unset]">
         <Card 
                 key={category.id} 
-                className="cursor-pointer border-0 bg-white/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:scale-105 h-full"
+                className="shadow-[0px_0px_5px_#00000020] cursor-pointer border-0 bg-white/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.02] h-full"
                 onClick={() => handleCategorySelect(category)}
               >
                 <CardContent className="p-8 text-center h-full flex justify-between flex-col">

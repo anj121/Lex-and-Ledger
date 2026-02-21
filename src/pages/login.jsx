@@ -46,16 +46,17 @@ const Login = () => {
         padding: 2,
       }}
     >
-      <Container maxWidth="sm">
+      <Container className="!max-w-[767px]">
         <Paper elevation={6} sx={{ borderRadius: 4, overflow: "hidden" }}>
           <Grid container spacing={0}>
             {/* Left Side - Information Section */}
             <Grid
               item
               xs={12}
-              md={5}
+              md={6}
+              className="bg-gradient-to-r from-blue-600 to-indigo-700"
               sx={{
-                background: "#0b0e2a",
+                // background: "#0b0e2a",
                 color: "white",
                 padding: 4,
                 display: "flex",
@@ -73,7 +74,7 @@ const Login = () => {
             </Grid>
 
             {/* Right Side - Login Form */}
-            <Grid item xs={12} md={7} sx={{ padding: 4, textAlign: "center" }}>
+            <Grid item xs={12} md={6} sx={{ padding: 4, textAlign: "center" }}>
               <Typography variant="h5" fontWeight="bold" color="#333" gutterBottom>
                 Enter Mobile Number
               </Typography>

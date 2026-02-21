@@ -142,7 +142,6 @@ const BankDetails = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-console.log({errors})
   const handleVerifyBank = async () => {
     if (!formData.ifscCode || !formData.accountNumber) {
       return;

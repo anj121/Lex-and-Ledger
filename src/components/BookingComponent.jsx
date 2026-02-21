@@ -97,7 +97,6 @@ const BookingComponent = ({
 
   const handleCategorySelect = (service) => {
     // navigate(`/services/${service.id}`);
-    console.log({ service });
     if (service.id === "immediate") {
       navigate(`/immediate-service`);
       setBookingStep(3);
@@ -114,11 +113,10 @@ const BookingComponent = ({
           {steps.map((step, index) => (
             <div key={index} className="flex items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  index + 1 <= bookingStep
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${index + 1 <= bookingStep
                     ? "bg-blue-600 text-white"
                     : "bg-gray-200 text-gray-600"
-                }`}
+                  }`}
               >
                 {index + 1 <= bookingStep ? (
                   <Check className="w-4 h-4" />
@@ -127,19 +125,17 @@ const BookingComponent = ({
                 )}
               </div>
               <span
-                className={`ml-2 text-sm ${
-                  index + 1 <= bookingStep
+                className={`ml-2 text-sm ${index + 1 <= bookingStep
                     ? "text-blue-600 font-medium"
                     : "text-gray-500"
-                }`}
+                  }`}
               >
                 {step}
               </span>
               {index < steps.length - 1 && (
                 <div
-                  className={`w-16 h-0.5 mx-4 ${
-                    index + 1 < bookingStep ? "bg-blue-600" : "bg-gray-200"
-                  }`}
+                  className={`w-16 h-0.5 mx-4 ${index + 1 < bookingStep ? "bg-blue-600" : "bg-gray-200"
+                    }`}
                 />
               )}
             </div>
@@ -149,29 +145,6 @@ const BookingComponent = ({
     );
   };
 
-  const renderNavigationButtons = () => {
-    return (
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <Button
-          variant="outline"
-          onClick={handleBackToHome}
-          className="bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-gray-50 shadow-lg"
-        >
-          <Home className="w-4 h-4 mr-2" />
-          Home
-        </Button>
-        <Button
-          variant="outline"
-          onClick={handleBackToCategory}
-          className="bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-gray-50 shadow-lg"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Services
-        </Button>
-      </div>
-    );
-  };
-console.log({selectedService})
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* {renderNavigationButtons()} */}
@@ -185,7 +158,7 @@ console.log({selectedService})
           </div>
         </div>
       </header> */}
-        <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="max-w-4xl mx-auto px-6 py-12">
         {bookingStep < 4 && renderProgressBar()}
         {bookingStep === 1 && (
           <div className="space-y-8">
@@ -241,87 +214,101 @@ console.log({selectedService})
               <div className="flex flex-col gap-5">
                 <div>
 
-                <Card className="border border-gray-100">
-                  <CardHeader>
-                    <CardTitle className="text-xl text-gray-900">
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-row items-center">
+                  <Card className="border border-gray-100">
+                    <CardHeader>
+                      <CardTitle className="text-xl text-gray-900">
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-row items-center">
 
-                        <ArrowLeft
-                          className="w-4 h-4 mr-2 cursor-pointer"
-                          onClick={handleBackToCategory}
-                        />
+                            <ArrowLeft
+                              className="w-4 h-4 mr-2 cursor-pointer"
+                              onClick={handleBackToCategory}
+                            />
 
-                        <p>Service Summary</p>
+                            <p>Service Summary</p>
+                          </div>
+
                         </div>
-                        <p className="text-blue-500 text-[12px] cursor-pointer" onClick={()=>navigate(`/service-detail/${selectedService.id}/${routeCategoryId}`)}>go to Service Detail</p>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-lg">
+                          {selectedService.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm mt-1">
+                          {selectedService.description}
+                        </p>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <span className="text-2xl font-bold text-blue-600">
+                            {selectedService.price}
+                          </span>
+                        </div>
+                        <Badge variant="outline" className="text-gray-600">
+                          {selectedService.duration}
+                        </Badge>
+                      </div>
+                      <div className="pt-4 border-t border-gray-100">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-gray-900 mb-2">
+                            What's Included:
+                          </h4>
+                          <Button
+                            onClick={() => {
+                              if (selectedService.id) {
+                                navigate(`/service-detail/${selectedService.id}/${routeCategoryId}`)
+                              }
+                            }
+                            }
+                            className="bg-blue-600 cursor-pointer hover:bg-blue-700 px-2 py-1 rounded-sm font-bold shadow-lg transition-transform hover:scale-105"
+                          >
+                            Go to Service Detail
+                          </Button>
+                        </div>
+                        <ul className="space-y-1 text-sm text-gray-600">
+                          <li className="flex items-center">
+                            <Check className="w-4 h-4 text-green-600 mr-2" />
+                            Expert consultation
+                          </li>
+                          <li className="flex items-center">
+                            <Check className="w-4 h-4 text-green-600 mr-2" />
+                            Document preparation
+                          </li>
+                          <li className="flex items-center">
+                            <Check className="w-4 h-4 text-green-600 mr-2" />
+                            Follow-up support
+                          </li>
+                          <li className="flex items-center">
+                            <Check className="w-4 h-4 text-green-600 mr-2" />
+                            Compliance guidance
+                          </li>
+                        </ul>
+
 
                       </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h3 className="font-semibold text-gray-900 text-lg">
-                        {selectedService.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm mt-1">
-                        {selectedService.description}
-                      </p>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <span className="text-2xl font-bold text-blue-600">
-                          {selectedService.price}
-                        </span>
-                      </div>
-                      <Badge variant="outline" className="text-gray-600">
-                        {selectedService.duration}
-                      </Badge>
-                    </div>
-                    <div className="pt-4 border-t border-gray-100">
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        What's Included:
-                      </h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        <li className="flex items-center">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          Expert consultation
-                        </li>
-                        <li className="flex items-center">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          Document preparation
-                        </li>
-                        <li className="flex items-center">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          Follow-up support
-                        </li>
-                        <li className="flex items-center">
-                          <Check className="w-4 h-4 text-green-600 mr-2" />
-                          Compliance guidance
-                        </li>
-                      </ul>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
                 </div>
-                  {selectedService.documents?.length > 0 && (
-                    <div>
-                      <Card className="border border-gray-100 !gap-2">
-                        <CardHeader>
-                          <CardTitle className="text-xl">
-                            Documents Required
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <ul className="list-disc list-inside text-gray-700 text-sm">
-                            {selectedService.documents.map((doc, index) => (
-                              <li key={index}>{doc}</li>
-                            ))}
-                          </ul>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
+                {selectedService.documents?.length > 0 && (
+                  <div>
+                    <Card className="border border-gray-100 !gap-2">
+                      <CardHeader>
+                        <CardTitle className="text-xl">
+                          Documents Required
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <ul className="list-disc list-inside text-gray-700 text-sm">
+                          {selectedService.documents.map((doc, index) => (
+                            <li key={index}>{doc}</li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
               </div>
 
               <div>

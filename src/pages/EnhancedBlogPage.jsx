@@ -40,7 +40,6 @@ const EnhancedBlogPage = () => {
   const location = useLocation();
   const showFullBlog =
     location.pathname === "#blog" || location.pathname === "/blog";
-  console.log({ showFullBlog, location });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
