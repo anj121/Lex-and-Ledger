@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_CONFIG from "@/config/api";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const Signup = () => {
       };
 
       await axios.post(
-        `http://localhost:5000/api/auth/register`,
+        `${API_CONFIG.BASE_URL}/auth/register`,
         payload
       );
 
