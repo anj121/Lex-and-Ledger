@@ -763,10 +763,8 @@ const[loading,setLoading]=useState(false)
       const response = await fetch(`${API_BASE}/bundles`, {
         headers
       });
-      console.log({response},response.ok)
       if (response.ok) {
         const data = await response.json();
-        console.log({data})
 const updatedBundles = (data?.bundles??[]).map((item, index) => ({
   ...item,
   icon: icons[index % icons.length],

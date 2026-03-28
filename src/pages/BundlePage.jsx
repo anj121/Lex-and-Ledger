@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
@@ -21,196 +21,73 @@ import {
   faBookOpen,
   faZap
 } from "@fortawesome/free-solid-svg-icons";
+import toast from 'react-hot-toast';
+import API_CONFIG from '../config/api.js';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Button } from '@/components/ui/button.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
 import { useNavigate } from 'react-router-dom';
+import { Briefcase, Calculator, Shield, Target } from 'lucide-react';
 
 const BundlePage = () => {
-  const navigate = useNavigate();
-  
-  const bundles = [
-    {
-      id: 1,
-      name: "Startup Essentials Bundle",
-      price: "₹35,000",
-      originalPrice: "₹45,000",
-      savings: "₹10,000",
-      duration: "15-20 days",
-      popular: true,
-      icon: faRocket,
-      color: "from-blue-500 to-purple-600",
-      description: "Everything you need to start your business legally and compliantly",
-      features: [
-        "Company Formation & Registration",
-        "GST Registration",
-        "PAN & TAN Registration",
-        "Digital Signature Certificate (DSC)",
-        "Director Identification Number (DIN)",
-        "Basic Legal Documentation",
-        "Tax Planning Consultation",
-        "Compliance Calendar Setup"
-      ],
-      includes: [
-        "Complete incorporation process",
-        "All government registrations",
-        "Basic tax setup",
-        "Legal document templates",
-        "3 months compliance support"
-      ]
-    },
-    {
-      id: 2,
-      name: "Growth Business Bundle",
-      price: "₹65,000",
-      originalPrice: "₹85,000",
-      savings: "₹20,000",
-      duration: "20-25 days",
-      popular: false,
-      icon: faBuilding,
-      color: "from-green-500 to-emerald-600",
-      description: "Comprehensive solution for growing businesses with advanced compliance needs",
-      features: [
-        "All Startup Essentials features",
-        "MSME/Udyam Registration",
-        "Trademark Registration",
-        "Advanced Tax Planning",
-        "Corporate Governance Setup",
-        "Employment Law Compliance",
-        "Contract Templates & Review",
-        "Monthly Compliance Support"
-      ],
-      includes: [
-        "Everything in Startup Essentials",
-        "IP protection services",
-        "Advanced legal documentation",
-        "Employment contracts",
-        "6 months ongoing support"
-      ]
-    },
-    {
-      id: 3,
-      name: "Enterprise Complete Bundle",
-      price: "₹1,25,000",
-      originalPrice: "₹1,65,000",
-      savings: "₹40,000",
-      duration: "30-45 days",
-      popular: false,
-      icon: faAward,
-      color: "from-purple-500 to-pink-600",
-      description: "Full-service package for established businesses and enterprises",
-      features: [
-        "All Growth Business features",
-        "M&A Documentation Support",
-        "Advanced Corporate Restructuring",
-        "International Trade Setup (IEC)",
-        "Foreign Investment Compliance",
-        "Litigation Support",
-        "Dedicated Account Manager",
-        "24/7 Legal Helpline"
-      ],
-      includes: [
-        "Everything in Growth Business",
-        "International compliance",
-        "M&A support",
-        "Dedicated relationship manager",
-        "12 months premium support"
-      ]
-    },
-    {
-      id: 4,
-      name: "Tax Compliance Bundle",
-      price: "₹25,000",
-      originalPrice: "₹35,000",
-      savings: "₹10,000",
-      duration: "10-15 days",
-      popular: false,
-      icon: faCalculator,
-      color: "from-orange-500 to-red-600",
-      description: "Comprehensive tax compliance and planning services",
-      features: [
-        "Income Tax Return Filing",
-        "GST Registration & Filing",
-        "TDS/TCS Compliance",
-        "Tax Planning & Advisory",
-        "Tax Assessment Support",
-        "Refund Processing",
-        "Annual Tax Health Check",
-        "Quarterly Tax Reviews"
-      ],
-      includes: [
-        "All tax registrations",
-        "Monthly GST filing",
-        "Annual ITR filing",
-        "Tax planning sessions",
-        "Ongoing tax support"
-      ]
-    },
-    {
-      id: 5,
-      name: "Legal Protection Bundle",
-      price: "₹45,000",
-      originalPrice: "₹60,000",
-      savings: "₹15,000",
-      duration: "15-20 days",
-      popular: false,
-      icon: faGavel,
-      color: "from-indigo-500 to-blue-600",
-      description: "Complete legal protection and documentation for your business",
-      features: [
-        "Contract Drafting & Review",
-        "Intellectual Property Registration",
-        "Employment Law Documentation",
-        "Privacy Policy & Terms",
-        "Dispute Resolution Support",
-        "Legal Risk Assessment",
-        "Compliance Audit",
-        "Legal Advisory Sessions"
-      ],
-      includes: [
-        "Custom contract templates",
-        "IP registration services",
-        "Legal document review",
-        "Risk assessment report",
-        "Ongoing legal consultation"
-      ]
-    },
-    {
-      id: 6,
-      name: "Quick Start Bundle",
-      price: "₹15,000",
-      originalPrice: "₹22,000",
-      savings: "₹7,000",
-      duration: "7-10 days",
-      popular: false,
-      icon: faZap,
-      color: "from-yellow-500 to-orange-600",
-      description: "Fast-track business setup for immediate market entry",
-      features: [
-        "Express Company Registration",
-        "Basic GST Registration",
-        "PAN Application",
-        "Bank Account Opening Support",
-        "Basic Compliance Setup",
-        "Startup India Registration",
-        "Essential Legal Documents",
-        "Quick Tax Setup"
-      ],
-      includes: [
-        "Expedited registration process",
-        "Basic compliance framework",
-        "Essential documentation",
-        "Banking assistance",
-        "1 month support"
-      ]
-    }
-  ];
+      const API_BASE = API_CONFIG.BASE_URL;
+const icons = [Target, Shield, Calculator, Briefcase];
 
+const colors = [
+  "from-green-500 to-green-600",
+  "from-blue-500 to-blue-600",
+  "from-purple-500 to-purple-600",
+  "from-indigo-500 to-indigo-600",
+];
+  const navigate = useNavigate();
+      const [bundles, setBundles] = useState([]);
+  const[loading,setLoading]=useState(false)
+  const getAuthToken = () => {
+    return localStorage.getItem('adminToken');
+  };
+  
   React.useEffect(() => {
     window.scrollTo(0, 0); 
   }, []);
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const token = getAuthToken();
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
 
+      const response = await fetch(`${API_BASE}/bundles`, {
+        headers
+      });
+      if (response.ok) {
+        const data = await response.json();
+const updatedBundles = (data?.bundles??[]).map((item, index) => ({
+  ...item,
+  icon: icons[index % icons.length],
+  color: colors[index % colors.length],
+  savings:0
+}));        setBundles(updatedBundles || []);
+
+      } else {
+        // Fallback to mock data if API is not available
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      // Use mock data as fallback
+      toast.error('Using offline data. Backend not connected.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(()=>{
+    fetchServices()
+  },[]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Hero Section */}
@@ -240,6 +117,12 @@ const BundlePage = () => {
       </div>
 
       {/* Main Content */}
+      {loading?<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading bundles...</p>
+        </div>
+      </div>:
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         {/* Bundles Grid */}
@@ -251,7 +134,7 @@ const BundlePage = () => {
         >
           {bundles.map((bundle, index) => (
             <motion.div
-              key={bundle.id}
+              key={bundle._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -260,7 +143,7 @@ const BundlePage = () => {
                 className={`relative overflow-hidden transition-all duration-500 hover:shadow-2xl cursor-pointer border-0 bg-white/90 backdrop-blur-sm hover:bg-white h-full ${
                   bundle.popular ? 'ring-2 ring-blue-500 shadow-xl' : 'hover:shadow-lg'
                 }`}
-                onClick={() => navigate(`/bundles/${bundle.id}`)}
+                onClick={() => navigate(`/bundles/${bundle._id}`)}
               >
                 {/* {bundle.popular && (
                   <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 text-sm font-semibold rounded-lg">
@@ -400,7 +283,7 @@ const BundlePage = () => {
             </div>
           </div>
         </motion.div>
-      </div>
+      </div>}
     </div>
   );
 };
