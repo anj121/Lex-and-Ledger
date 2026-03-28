@@ -133,7 +133,7 @@ const AdminLogin = () => {
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
               <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials:</h4>
               <p className="text-xs text-blue-700">
-                Username: <code className="bg-blue-100 px-1 rounded">test</code>
+                Username: <code className="bg-blue-100 px-1 rounded">test26</code>
               </p>
               <p className="text-xs text-blue-700">
                 Password: <code className="bg-blue-100 px-1 rounded">Temp@12345</code>

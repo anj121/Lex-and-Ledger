@@ -38,282 +38,67 @@ import { Button } from '@/components/ui/button.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
 import { Separator } from '@/components/ui/separator.jsx';
 import { useNavigate, useParams } from 'react-router-dom';
+import API_CONFIG from '../config/api.js';
+
+ const API_BASE = API_CONFIG.BASE_URL;
 
 const BundleDetail = () => {
   const navigate = useNavigate();
   const { bundleId } = useParams();
-  const [bundle, setBundle] = useState(null);
-  const [loading, setLoading] = useState(true);
+      const [bundle, setBundle] = useState([]);
+  const[loading,setLoading]=useState(false)
+  
   const [selectedTab, setSelectedTab] = useState('overview');
   const [openFAQ, setOpenFAQ] = useState(null);
   const [hoveredFeature, setHoveredFeature] = useState(null);
+const getAuthToken = () => {
+    return localStorage.getItem('adminToken');
+  };
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const token = getAuthToken();
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
 
-  const bundles = [
-    {
-      id: 1,
-      name: "Startup Essentials Bundle",
-      price: "₹35,000",
-      originalPrice: "₹45,000",
-      savings: "₹10,000",
-      duration: "15-20 days",
-      popular: true,
-      icon: faRocket,
-      color: "from-blue-500 to-purple-600",
-      description: "Everything you need to start your business legally and compliantly",
-      longDescription: "Our Startup Essentials Bundle is the perfect foundation for new businesses. This comprehensive package includes all the essential legal and financial services required to establish your business with complete compliance and protection.",
-      features: [
-        "Company Formation & Registration",
-        "GST Registration",
-        "PAN & TAN Registration",
-        "Digital Signature Certificate (DSC)",
-        "Director Identification Number (DIN)",
-        "Basic Legal Documentation",
-        "Tax Planning Consultation",
-        "Compliance Calendar Setup"
-      ],
-      includes: [
-        "Complete incorporation process",
-        "All government registrations",
-        "Basic tax setup",
-        "Legal document templates",
-        "3 months compliance support"
-      ],
-      process: [
-        "Initial consultation and requirement analysis",
-        "Document collection and verification",
-        "Application submission to government authorities",
-        "Follow-up and status tracking",
-        "Certificate delivery and setup assistance"
-      ],
-      benefits: [
-        "Complete legal compliance from day one",
-        "Professional guidance throughout the process",
-        "Time-saving streamlined procedures",
-        "Cost-effective bundled pricing",
-        "Ongoing support and maintenance"
-      ]
-    },
-    {
-      id: 2,
-      name: "Growth Business Bundle",
-      price: "₹65,000",
-      originalPrice: "₹85,000",
-      savings: "₹20,000",
-      duration: "20-25 days",
-      popular: false,
-      icon: faBuilding,
-      color: "from-green-500 to-emerald-600",
-      description: "Comprehensive solution for growing businesses with advanced compliance needs",
-      longDescription: "Designed for businesses ready to scale, our Growth Business Bundle provides advanced legal and financial services to support your expansion while maintaining compliance and protecting your interests.",
-      features: [
-        "All Startup Essentials features",
-        "MSME/Udyam Registration",
-        "Trademark Registration",
-        "Advanced Tax Planning",
-        "Corporate Governance Setup",
-        "Employment Law Compliance",
-        "Contract Templates & Review",
-        "Monthly Compliance Support"
-      ],
-      includes: [
-        "Everything in Startup Essentials",
-        "IP protection services",
-        "Advanced legal documentation",
-        "Employment contracts",
-        "6 months ongoing support"
-      ],
-      process: [
-        "Comprehensive business assessment",
-        "Advanced compliance planning",
-        "IP protection strategy development",
-        "Corporate governance implementation",
-        "Ongoing monitoring and support"
-      ],
-      benefits: [
-        "Enhanced legal protection",
-        "Scalable business structure",
-        "Advanced tax optimization",
-        "Professional corporate governance",
-        "Long-term growth support"
-      ]
-    },
-    {
-      id: 3,
-      name: "Enterprise Complete Bundle",
-      price: "₹1,25,000",
-      originalPrice: "₹1,65,000",
-      savings: "₹40,000",
-      duration: "30-45 days",
-      popular: false,
-      icon: faAward,
-      color: "from-purple-500 to-pink-600",
-      description: "Full-service package for established businesses and enterprises",
-      longDescription: "Our Enterprise Complete Bundle is designed for established businesses requiring comprehensive legal and financial services. This premium package includes advanced compliance, international trade support, and dedicated expert assistance.",
-      features: [
-        "All Growth Business features",
-        "M&A Documentation Support",
-        "Advanced Corporate Restructuring",
-        "International Trade Setup (IEC)",
-        "Foreign Investment Compliance",
-        "Litigation Support",
-        "Dedicated Account Manager",
-        "24/7 Legal Helpline"
-      ],
-      includes: [
-        "Everything in Growth Business",
-        "International compliance",
-        "M&A support",
-        "Dedicated relationship manager",
-        "12 months premium support"
-      ],
-      process: [
-        "Enterprise-level assessment",
-        "International compliance planning",
-        "M&A strategy development",
-        "Advanced restructuring implementation",
-        "Dedicated ongoing support"
-      ],
-      benefits: [
-        "Enterprise-grade protection",
-        "International business support",
-        "Advanced legal strategies",
-        "Dedicated expert assistance",
-        "Comprehensive risk management"
-      ]
-    },
-    {
-      id: 4,
-      name: "Tax Compliance Bundle",
-      price: "₹25,000",
-      originalPrice: "₹35,000",
-      savings: "₹10,000",
-      duration: "10-15 days",
-      popular: false,
-      icon: faCalculator,
-      color: "from-orange-500 to-red-600",
-      description: "Comprehensive tax compliance and planning services",
-      longDescription: "Our Tax Compliance Bundle ensures your business meets all tax obligations while optimizing your tax position. This package includes comprehensive tax planning, filing, and ongoing compliance support.",
-      features: [
-        "Income Tax Return Filing",
-        "GST Registration & Filing",
-        "TDS/TCS Compliance",
-        "Tax Planning & Advisory",
-        "Tax Assessment Support",
-        "Refund Processing",
-        "Annual Tax Health Check",
-        "Quarterly Tax Reviews"
-      ],
-      includes: [
-        "All tax registrations",
-        "Monthly GST filing",
-        "Annual ITR filing",
-        "Tax planning sessions",
-        "Ongoing tax support"
-      ],
-      process: [
-        "Tax assessment and planning",
-        "Registration and compliance setup",
-        "Regular filing and monitoring",
-        "Tax optimization strategies",
-        "Ongoing advisory support"
-      ],
-      benefits: [
-        "Complete tax compliance",
-        "Tax optimization opportunities",
-        "Regular monitoring and support",
-        "Risk mitigation",
-        "Cost-effective tax management"
-      ]
-    },
-    {
-      id: 5,
-      name: "Legal Protection Bundle",
-      price: "₹45,000",
-      originalPrice: "₹60,000",
-      savings: "₹15,000",
-      duration: "15-20 days",
-      popular: false,
-      icon: faGavel,
-      color: "from-indigo-500 to-blue-600",
-      description: "Complete legal protection and documentation for your business",
-      longDescription: "Our Legal Protection Bundle provides comprehensive legal services to protect your business interests, intellectual property, and ensure compliance with all applicable laws and regulations.",
-      features: [
-        "Contract Drafting & Review",
-        "Intellectual Property Registration",
-        "Employment Law Documentation",
-        "Privacy Policy & Terms",
-        "Dispute Resolution Support",
-        "Legal Risk Assessment",
-        "Compliance Audit",
-        "Legal Advisory Sessions"
-      ],
-      includes: [
-        "Custom contract templates",
-        "IP registration services",
-        "Legal document review",
-        "Risk assessment report",
-        "Ongoing legal consultation"
-      ],
-      process: [
-        "Legal risk assessment",
-        "Document preparation and review",
-        "IP protection implementation",
-        "Compliance audit and reporting",
-        "Ongoing legal support"
-      ],
-      benefits: [
-        "Comprehensive legal protection",
-        "IP asset protection",
-        "Risk mitigation",
-        "Professional legal guidance",
-        "Ongoing legal support"
-      ]
-    },
-    {
-      id: 6,
-      name: "Quick Start Bundle",
-      price: "₹15,000",
-      originalPrice: "₹22,000",
-      savings: "₹7,000",
-      duration: "7-10 days",
-      popular: false,
-      icon: faZap,
-      color: "from-yellow-500 to-orange-600",
-      description: "Fast-track business setup for immediate market entry",
-      longDescription: "Our Quick Start Bundle is designed for entrepreneurs who need to get their business up and running quickly. This expedited package includes essential services for immediate market entry.",
-      features: [
-        "Express Company Registration",
-        "Basic GST Registration",
-        "PAN Application",
-        "Bank Account Opening Support",
-        "Basic Compliance Setup",
-        "Startup India Registration",
-        "Essential Legal Documents",
-        "Quick Tax Setup"
-      ],
-      includes: [
-        "Expedited registration process",
-        "Basic compliance framework",
-        "Essential documentation",
-        "Banking assistance",
-        "1 month support"
-      ],
-      process: [
-        "Quick requirement assessment",
-        "Expedited document processing",
-        "Fast-track registration",
-        "Basic setup assistance",
-        "Initial support period"
-      ],
-      benefits: [
-        "Fast market entry",
-        "Essential compliance",
-        "Quick setup process",
-        "Cost-effective solution",
-        "Immediate business start"
-      ]
+      const response = await fetch(`${API_BASE}/bundles`, {
+        headers
+      });
+      console.log({response},response.ok)
+      if (response.ok) {
+        const data = await response.json();
+        console.log({data})
+const updatedBundles = (data?.bundles??[]).map((item, index) => ({
+  ...item,
+  icon: icons[index % icons.length],
+  color: colors[index % colors.length],
+  savings:0
+})).find(b => b.id.toString() === bundleId);     
+setBundle(updatedBundles)
+    window.scrollTo(0, 0);
+
+
+      } else {
+        // Fallback to mock data if API is not available
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      // Use mock data as fallback
+      toast.error('Using offline data. Backend not connected.');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+  useEffect(()=>{
+    fetchServices()
+  },[bundleId]);
+  console.log({bundle})
+  
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
@@ -374,12 +159,12 @@ const BundleDetail = () => {
     { icon: faClock, value: "24/7", label: "Support Available" }
   ];
 
-  useEffect(() => {
-    const selectedBundle = bundles.find(b => b.id.toString() === bundleId);
-    setBundle(selectedBundle);
-    setLoading(false);
-    window.scrollTo(0, 0);
-  }, [bundleId]);
+  // useEffect(() => {
+  //   const selectedBundle = bundles.find(b => b.id.toString() === bundleId);
+  //   setBundle(selectedBundle);
+  //   setLoading(false);
+  //   window.scrollTo(0, 0);
+  // }, [bundleId]);
 
   const handleBackToBundles = () => {
     navigate('/bundles');

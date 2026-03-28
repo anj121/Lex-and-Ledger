@@ -1,53 +1,54 @@
 import mongoose from 'mongoose';
 
-const bundleSchema = new mongoose.Schema(
-  {
+const bundleSchema = new mongoose.Schema({
     name: {
-      type: String,
-      required: true,
-      trim: true
+        type: String,
+        required: true,
+        trim: true
     },
     description: {
-      type: String,
-      required: true
+        type: String,
+        required: true
     },
     longDescription: {
-      type: String
+        type: String
     },
     price: {
-      type: String,
-      required: true
+        type: String,
+        required: true
     },
     originalPrice: {
-      type: String
+        type: String
     },
     savings: {
-      type: String
+        type: String
     },
     duration: {
-      type: String
+        type: String
     },
     popular: {
-      type: Boolean,
-      default: false
+        type: Boolean,
+        default: false
     },
     icon: {
-      type: String // frontend icon key (rocket, building etc)
+        type: String // frontend icon key (rocket, building etc)
     },
     color: {
-      type: String
+        type: String
     },
     features: [String],
     includes: [String],
     process: [String],
     benefits: [String],
+    services: [String],
+
     status: {
-      type: String,
-      enum: ['active', 'inactive'],
-      default: 'active'
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active'
     }
-  },
-  { timestamps: true }
-);
+}, {
+    timestamps: true
+});
 
 export default mongoose.model('Bundle', bundleSchema);

@@ -37,7 +37,8 @@ const BundleManagement = () => {
     process: '',
     benefits: '',
     popular: false,
-    status: 'active'
+    status: 'active',
+    services:""
   });
 
   const API_BASE = API_CONFIG.BASE_URL;
@@ -56,11 +57,11 @@ const BundleManagement = () => {
         const data = await res.json();
         setBundles(data.bundles || []);
       } else {
-        setBundles(mockBundles);
+        // setBundles(mockBundles);
       }
     } catch (e) {
       console.error(e);
-      setBundles(mockBundles);
+      // setBundles(mockBundles);
       toast.error('Using offline bundle data');
     } finally {
       setLoading(false);
@@ -140,7 +141,8 @@ const BundleManagement = () => {
       process: '',
       benefits: '',
       popular: false,
-      status: 'active'
+      status: 'active',
+      services:""
     });
   };
 
@@ -254,6 +256,7 @@ const BundleManagement = () => {
               <Textarea name="includes" placeholder="Includes" value={formData.includes} onChange={handleInputChange} />
               <Textarea name="process" placeholder="Process" value={formData.process} onChange={handleInputChange} />
               <Textarea name="benefits" placeholder="Benefits" value={formData.benefits} onChange={handleInputChange} />
+              <Textarea name="services" placeholder="Services (comma separated)" value={formData.services} onChange={handleInputChange} />
 
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" name="popular" checked={formData.popular} onChange={handleInputChange} />

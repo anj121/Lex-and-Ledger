@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import mongoose from "mongoose";
-import { fileURLToPath } from "url";
+import {
+    fileURLToPath
+} from "url";
 import path from "path";
 
 import authRoutes from "./routes/auth.routes.js";
@@ -12,7 +14,8 @@ import bundleRoutes from "./routes/bundleRoutes.js";
 
 
 
-const __filename = fileURLToPath(import.meta.url);
+const __filename = fileURLToPath(
+    import.meta.url);
 const __dirname = path.dirname(__filename);
 // dotenv.config({ path: path.join(__dirname, "../../.env") });
 dotenv.config();
@@ -21,35 +24,37 @@ const app = express();
 /* ------------------ MIDDLEWARES ------------------ */
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+    extended: true
+}));
 
 // Add cache control headers for API routes
 app.use('/api', (req, res, next) => {
-  res.set({
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0'
-  });
-  next();
+    res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    });
+    next();
 });
 
 // Logs in dev
 if (process.env.NODE_ENV !== "production") {
-  app.use(morgan("dev"));
+    app.use(morgan("dev"));
 }
 
 /* ------------------ DATABASE ------------------ */
 console.log("MongoDB URI:", process.env.MONGODB_URI);
 const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      maxPoolSize: 10,
-    });
-    console.log("✅ MongoDB Connected");
-  } catch (error) {
-    console.error("❌ MongoDB connection failed", error);
-    process.exit(1);
-  }
+    try {
+        await mongoose.connect("mongodb+srv://ag450081_db_user:TyJJEeGpMWb1JEOq@cluster0.r2k2uyx.mongodb.net/test", {
+            maxPoolSize: 10,
+        });
+        console.log("✅ MongoDB Connected");
+    } catch (error) {
+        console.error("❌ MongoDB connection failed", error);
+        process.exit(1);
+    }
 };
 
 connectDB();
@@ -65,7 +70,7 @@ app.use(express.static(path.join(__dirname, "../../dist")));
 
 // Serve React app for any non-API routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../dist/index.html"));
+    res.sendFile(path.join(__dirname, "../../dist/index.html"));
 });
 
 
@@ -73,16 +78,16 @@ app.get("*", (req, res) => {
 
 /* ------------------ ERROR HANDLER ------------------ */
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.stack);
-  res.status(500).json({
-    success: false,
-    message: "Internal Server Error",
-  });
+    console.error("❌ Error:", err.stack);
+    res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+    });
 });
 
 /* ------------------ SERVER ------------------ */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🔥 Server running on port ${PORT}`);
+    console.log(`🔥 Server running on port ${PORT}`);
 });

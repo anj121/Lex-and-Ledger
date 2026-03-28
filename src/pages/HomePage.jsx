@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button.jsx";
 import ServiceCategories from "../components/ServiceCategories.jsx";
@@ -11,6 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card.jsx";
 import { Badge } from "@/components/ui/badge.jsx";
+import toast from 'react-hot-toast';
+import API_CONFIG from '../config/api.js';
 
 import {
   Building2,
@@ -726,13 +728,67 @@ const FAQItem = ({ faq, index }) => {
     </Card>
   );
 };
+const icons = [Target, Shield, Calculator, Briefcase];
 
+const colors = [
+  "from-green-500 to-green-600",
+  "from-blue-500 to-blue-600",
+  "from-purple-500 to-purple-600",
+  "from-indigo-500 to-indigo-600",
+];
 const HomePage = () => {
+    const API_BASE = API_CONFIG.BASE_URL;
+
   const navigate = useNavigate();
+    const [bundles, setBundles] = useState([]);
+const[loading,setLoading]=useState(false)
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isCallOptionsModalOpen, setIsCallOptionsModalOpen] = useState(false);
   const [isImmediateHelpModalOpen, setIsImmediateHelpModalOpen] = useState(false);
+ const getAuthToken = () => {
+    return localStorage.getItem('adminToken');
+  };
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const token = getAuthToken();
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
 
+      const response = await fetch(`${API_BASE}/bundles`, {
+        headers
+      });
+      console.log({response},response.ok)
+      if (response.ok) {
+        const data = await response.json();
+        console.log({data})
+const updatedBundles = (data?.bundles??[]).map((item, index) => ({
+  ...item,
+  icon: icons[index % icons.length],
+  color: colors[index % colors.length],
+  savings:0
+}));        setBundles(updatedBundles || []);
+
+      } else {
+        // Fallback to mock data if API is not available
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      // Use mock data as fallback
+      toast.error('Using offline data. Backend not connected.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(()=>{
+    fetchServices()
+  },[]);
+  console.log({bundles})
   const handleCategorySelect = (category) => {
     navigate(`/services/${category.id}`);
   };
@@ -742,7 +798,7 @@ const HomePage = () => {
   };
    
   const handleBundleSelect = (category) => {
-    navigate(`/bundles/${category.id}`);
+    navigate(`/bundles/${category._id}`);
   };
   
   const handleContactSubmit = (formData) => {
@@ -935,8 +991,8 @@ const HomePage = () => {
             </p>
           </div>
 
-          <HorizontalSlider
-            items={serviceBundles}
+         {bundles.length>0&& <HorizontalSlider
+            items={bundles??[]}
             slidesPerView={3}
             renderCard={(bundle) => (
               <Card className="relative overflow-hidden border-0 h-full hover:shadow-xl transition-all duration-300 hover:scale-105">
@@ -994,7 +1050,7 @@ const HomePage = () => {
                 </CardContent>
               </Card>
             )}
-          />
+          />}
         </div>
       </section>
       <section id="about" className="py-24">

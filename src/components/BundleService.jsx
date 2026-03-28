@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Package,
@@ -10,20 +10,23 @@ import {
   Shield,
   Zap,
   Award
-,
-Star,
-Calendar,
-IndianRupee,
-ArrowRight,
-Clock,
-Users,
-Sparkles,
-CheckCircle,
-ChevronDown,
-ChevronUp
+  ,
+  Star,
+  Calendar,
+  IndianRupee,
+  ArrowRight,
+  Clock,
+  Users,
+  Sparkles,
+  CheckCircle,
+  ChevronDown,
+  ChevronUp,
+  Calculator,
+  Target,
+  Briefcase
 } from "lucide-react";
 
-import { 
+import {
   faPlus,
   faCheckCircle,
   faStar,
@@ -57,187 +60,80 @@ import {
   faCrown,
   faArrowTrendUp,
   // faTrendingUp,
-  faBox} from "@fortawesome/free-solid-svg-icons";
+  faBox
+} from "@fortawesome/free-solid-svg-icons";
 
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Separator } from '@/components/ui/separator.jsx'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible.jsx'
-import HorizontalSlider from './HorizontalSlider'
+import toast from 'react-hot-toast';
+import API_CONFIG from '../config/api.js';
+const API_BASE = API_CONFIG.BASE_URL;
+const icons = [Target, Shield, Calculator, Briefcase];
 
+const colors = [
+  "from-green-500 to-green-600",
+  "from-blue-500 to-blue-600",
+  "from-purple-500 to-purple-600",
+  "from-indigo-500 to-indigo-600",
+];
 function BundleService() {
   const [selectedBundle, setSelectedBundle] = useState(1)
   const [selectedTab, setSelectedTab] = useState('overview')
   const [openFAQ, setOpenFAQ] = useState(null)
   const [hoveredFeature, setHoveredFeature] = useState(null)
   const navigate = useNavigate();
-  const bundles = [
-    {
-      id: 1,
-      name: "Startup Essentials Bundle",
-      price: "₹35,000",
-      originalPrice: "₹45,000",
-      savings: "₹10,000",
-      duration: "15-20 days",
-      popular: true,
-      description: "Everything you need to start your business legally and compliantly",
-      features: [
-        "Company Formation & Registration",
-        "GST Registration",
-        "PAN & TAN Registration",
-        "Digital Signature Certificate (DSC)",
-        "Director Identification Number (DIN)",
-        "Basic Legal Documentation",
-        "Tax Planning Consultation",
-        "Compliance Calendar Setup"
-      ],
-      includes: [
-        "Complete incorporation process",
-        "All government registrations",
-        "Basic tax setup",
-        "Legal document templates",
-        "3 months compliance support"
-      ]
-    },
-    {
-      id: 2,
-      name: "Growth Business Bundle",
-      price: "₹65,000",
-      originalPrice: "₹85,000",
-      savings: "₹20,000",
-      duration: "20-25 days",
-      popular: false,
-      description: "Comprehensive solution for growing businesses with advanced compliance needs",
-      features: [
-        "All Startup Essentials features",
-        "MSME/Udyam Registration",
-        "Trademark Registration",
-        "Advanced Tax Planning",
-        "Corporate Governance Setup",
-        "Employment Law Compliance",
-        "Contract Templates & Review",
-        "Monthly Compliance Support"
-      ],
-      includes: [
-        "Everything in Startup Essentials",
-        "IP protection services",
-        "Advanced legal documentation",
-        "Employment contracts",
-        "6 months ongoing support"
-      ]
-    },
-    {
-      id: 3,
-      name: "Enterprise Complete Bundle",
-      price: "₹1,25,000",
-      originalPrice: "₹1,65,000",
-      savings: "₹40,000",
-      duration: "30-45 days",
-      popular: false,
-      description: "Full-service package for established businesses and enterprises",
-      features: [
-        "All Growth Business features",
-        "M&A Documentation Support",
-        "Advanced Corporate Restructuring",
-        "International Trade Setup (IEC)",
-        "Foreign Investment Compliance",
-        "Litigation Support",
-        "Dedicated Account Manager",
-        "24/7 Legal Helpline"
-      ],
-      includes: [
-        "Everything in Growth Business",
-        "International compliance",
-        "M&A support",
-        "Dedicated relationship manager",
-        "12 months premium support"
-      ]
-    },
-    {
-      id: 4,
-      name: "Tax Compliance Bundle",
-      price: "₹25,000",
-      originalPrice: "₹35,000",
-      savings: "₹10,000",
-      duration: "10-15 days",
-      popular: false,
-      description: "Comprehensive tax compliance and planning services",
-      features: [
-        "Income Tax Return Filing",
-        "GST Registration & Filing",
-        "TDS/TCS Compliance",
-        "Tax Planning & Advisory",
-        "Tax Assessment Support",
-        "Refund Processing",
-        "Annual Tax Health Check",
-        "Quarterly Tax Reviews"
-      ],
-      includes: [
-        "All tax registrations",
-        "Monthly GST filing",
-        "Annual ITR filing",
-        "Tax planning sessions",
-        "Ongoing tax support"
-      ]
-    },
-    {
-      id: 5,
-      name: "Legal Protection Bundle",
-      price: "₹45,000",
-      originalPrice: "₹60,000",
-      savings: "₹15,000",
-      duration: "15-20 days",
-      popular: false,
-      description: "Complete legal protection and documentation for your business",
-      features: [
-        "Contract Drafting & Review",
-        "Intellectual Property Registration",
-        "Employment Law Documentation",
-        "Privacy Policy & Terms",
-        "Dispute Resolution Support",
-        "Legal Risk Assessment",
-        "Compliance Audit",
-        "Legal Advisory Sessions"
-      ],
-      includes: [
-        "Custom contract templates",
-        "IP registration services",
-        "Legal document review",
-        "Risk assessment report",
-        "Ongoing legal consultation"
-      ]
-    },
-    {
-      id: 6,
-      name: "Quick Start Bundle",
-      price: "₹15,000",
-      originalPrice: "₹22,000",
-      savings: "₹7,000",
-      duration: "7-10 days",
-      popular: false,
-      description: "Fast-track business setup for immediate market entry",
-      features: [
-        "Express Company Registration",
-        "Basic GST Registration",
-        "PAN Application",
-        "Bank Account Opening Support",
-        "Basic Compliance Setup",
-        "Startup India Registration",
-        "Essential Legal Documents",
-        "Quick Tax Setup"
-      ],
-      includes: [
-        "Expedited registration process",
-        "Basic compliance framework",
-        "Essential documentation",
-        "Banking assistance",
-        "1 month support"
-      ]
-    }
-  ]
+  const [loading, setLoading] = useState(false)
 
-  const currentBundle = bundles.find(bundle => bundle.id === selectedBundle) || bundles[0]
+  const { categoryId: bundleId } = useParams();
+
+  const [currentBundle, setBundles] = useState([]);
+  const getAuthToken = () => {
+    return localStorage.getItem('adminToken');
+  };
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const token = getAuthToken();
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${API_BASE}/bundles`, {
+        headers
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const updatedBundles = (data?.bundles ?? []).map((item, index) => ({
+          ...item,
+          icon: icons[index % icons.length],
+          color: colors[index % colors.length],
+          savings: 0
+        })).find(b => b._id.toString() === bundleId);
+        setBundles(updatedBundles)
+        window.scrollTo(0, 0);
+
+
+      } else {
+        // Fallback to mock data if API is not available
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      // Use mock data as fallback
+      toast.error('Using offline data. Backend not connected.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchServices()
+  }, [bundleId]);
 
   const bundleIcons = {
     1: Package,
@@ -319,7 +215,7 @@ function BundleService() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-     
+
 
 
 
@@ -341,15 +237,15 @@ function BundleService() {
                   Business Bundle
                 </Badge>
               </div>
-              
+
               <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
                 {currentBundle.name}
               </h1>
-              
+
               <p className="text-lg text-blue-100 leading-relaxed">
                 {currentBundle.description}
               </p>
-              
+
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center space-x-2 bg-white/15 rounded-xl px-6 py-3 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300">
                   <FontAwesomeIcon icon={faIndianRupee} className="w-5 h-5" />
@@ -364,11 +260,11 @@ function BundleService() {
                   <FontAwesomeIcon icon={faMagicWandSparkles} className="w-5 h-5" />
                   <span className="font-bold">Save {currentBundle.savings}</span>
                 </div>
-                </div>
-              
+              </div>
+
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   onClick={() => navigate("/signup")}
                   className="bg-white text-blue-600 hover:bg-blue-50 group h-12 px-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
@@ -377,7 +273,7 @@ function BundleService() {
                 </Button>
               </div>
             </div>
-            
+
             <div className="hidden lg:block">
               <div className="w-full h-80 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20 p-6 hover:bg-white/15 transition-all duration-300 shadow-xl">
                 <div className="flex items-center space-x-3 mb-6">
@@ -387,7 +283,7 @@ function BundleService() {
                   <h3 className="text-xl font-semibold">Bundle Highlights</h3>
                 </div>
                 <ul className="space-y-3">
-                  {currentBundle.features.slice(0, 5).map((feature, index) => (
+                  {(currentBundle.features ?? []).slice(0, 5).map((feature, index) => (
                     <li key={index} className="flex items-center space-x-3">
                       <div className="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center flex-shrink-0">
                         <FontAwesomeIcon icon={faCheck} className="w-3 h-3 text-white" />
@@ -395,12 +291,12 @@ function BundleService() {
                       <span className="text-sm font-medium">{feature}</span>
                     </li>
                   ))}
-                  {currentBundle.features.length > 5 && (
+                  {(currentBundle.features ?? []).length > 5 && (
                     <li className="text-sm text-blue-200 italic flex items-center space-x-3">
                       <div className="w-5 h-5 bg-blue-400 rounded-full flex items-center justify-center flex-shrink-0">
                         <FontAwesomeIcon icon={faPlus} className="w-3 h-3 text-white" />
                       </div>
-                      <span>+{currentBundle.features.length - 5} more features...</span>
+                      <span>+{(currentBundle.features ?? []).length - 5} more features...</span>
                     </li>
                   )}
                 </ul>
@@ -425,24 +321,22 @@ function BundleService() {
               Comprehensive business solutions designed to save you time, money, and ensure complete compliance.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <Card 
+            {(features ?? []).map((feature, index) => (
+              <Card
                 key={index}
                 className="text-center border-0 bg-white/80 backdrop-blur-sm hover:bg-white hover:shadow-lg transition-all duration-300 cursor-pointer group"
                 onMouseEnter={() => setHoveredFeature(index)}
                 onMouseLeave={() => setHoveredFeature(null)}
               >
                 <CardHeader className="pb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${
-                    hoveredFeature === index 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600' 
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${hoveredFeature === index
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600'
                       : 'bg-gradient-to-r from-blue-100 to-purple-100'
-                  }`}>
-                    <feature.icon className={`w-6 h-6 transition-colors duration-300 ${
-                      hoveredFeature === index ? 'text-white' : 'text-blue-600'
-                    }`} />
+                    }`}>
+                    <feature.icon className={`w-6 h-6 transition-colors duration-300 ${hoveredFeature === index ? 'text-white' : 'text-blue-600'
+                      }`} />
                   </div>
                   <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
                     {feature.title}
@@ -459,7 +353,7 @@ function BundleService() {
         </div>
       </section>
 
-     
+
 
       {/* Main Content */}
       <section className="py-16 bg-white">
@@ -472,11 +366,10 @@ function BundleService() {
                   <button
                     key={tab.id}
                     onClick={() => setSelectedTab(tab.id)}
-                    className={`px-4 py-3 rounded-md font-medium transition-all duration-200 whitespace-nowrap ${
-                      selectedTab === tab.id
+                    className={`px-4 py-3 rounded-md font-medium transition-all duration-200 whitespace-nowrap ${selectedTab === tab.id
                         ? 'bg-white text-blue-600 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -511,7 +404,7 @@ function BundleService() {
                       </div>
                       <div className="text-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
                         <Package className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                        <div className="font-semibold text-lg">{currentBundle.features.length}</div>
+                        <div className="font-semibold text-lg">{(currentBundle.features ?? []).length}</div>
                         <div className="text-sm text-gray-600">Services Included</div>
                       </div>
                       <div className="text-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
@@ -681,7 +574,7 @@ function BundleService() {
         {/* Interactive Background Elements */}
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
-        
+
         {/* Floating Elements */}
         <motion.div
           className="absolute top-10 left-10 w-6 h-6 bg-white/10 rounded-full"
@@ -710,7 +603,7 @@ function BundleService() {
             delay: 1
           }}
         />
-        
+
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -728,8 +621,8 @@ function BundleService() {
               Ready to Launch Your Business?
             </motion.div>
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -737,8 +630,8 @@ function BundleService() {
           >
             Ready to Start Your Business Journey?
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
@@ -746,8 +639,8 @@ function BundleService() {
           >
             Choose <span className="font-semibold text-white">{currentBundle.name}</span> and save <span className="font-semibold text-green-300">{currentBundle.savings}</span> while getting everything you need for success.
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
@@ -757,22 +650,22 @@ function BundleService() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-white text-blue-600 hover:bg-blue-50 group h-14 px-8 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 Get {currentBundle.name}
                 <FontAwesomeIcon icon={faArrowRight} className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </motion.div>
-            
+
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Button 
-                size="lg" 
-                variant="outline" 
+              <Button
+                size="lg"
+                variant="outline"
                 className="border-white text-blue-600 hover:bg-white hover:text-blue-600 h-14 px-8 text-lg font-semibold backdrop-blur-sm transition-all duration-300"
               >
                 <FontAwesomeIcon icon={faShield} className="w-5 h-5 mr-2" />
@@ -780,7 +673,7 @@ function BundleService() {
               </Button>
             </motion.div>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -819,8 +712,8 @@ function BundleService() {
               Trusted by thousands of businesses across India with proven results and exceptional service.
             </p>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -837,14 +730,14 @@ function BundleService() {
                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
-                whileHover={{ 
-                  scale: 1.05, 
+                whileHover={{
+                  scale: 1.05,
                   y: -5,
                   transition: { duration: 0.2 }
                 }}
                 className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/30 hover:bg-white hover:shadow-2xl transition-all duration-300 cursor-pointer group"
               >
-                <motion.div 
+                <motion.div
                   className={`w-16 h-16 bg-gradient-to-r ${stat.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300`}
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
@@ -859,16 +752,16 @@ function BundleService() {
         </div>
       </section>
 
-    {/* Enhanced Interactive Testimonials Section */}
-    <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50 relative overflow-hidden">
+      {/* Enhanced Interactive Testimonials Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50 relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-600 rounded-full blur-3xl"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -883,7 +776,7 @@ function BundleService() {
               <FontAwesomeIcon icon={faStar} className="w-4 h-4 mr-2" />
               Client Success Stories
             </motion.div>
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -891,7 +784,7 @@ function BundleService() {
             >
               What Our Clients Say
             </motion.h2>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -900,7 +793,7 @@ function BundleService() {
               Trusted by thousands of businesses across India with proven results and exceptional service delivery.
             </motion.p>
           </motion.div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <motion.div
@@ -908,8 +801,8 @@ function BundleService() {
                 initial={{ opacity: 0, y: 30, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
-                whileHover={{ 
-                  scale: 1.05, 
+                whileHover={{
+                  scale: 1.05,
                   y: -10,
                   transition: { duration: 0.3 }
                 }}
@@ -917,9 +810,9 @@ function BundleService() {
               >
                 <Card className="h-full border-0 bg-white/80 backdrop-blur-sm hover:bg-white hover:shadow-2xl transition-all duration-500 cursor-pointer group">
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                  
+
                   <CardContent className="pt-8 pb-6">
-                    <motion.div 
+                    <motion.div
                       className="flex items-center mb-6"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -936,8 +829,8 @@ function BundleService() {
                         </motion.div>
                       ))}
                     </motion.div>
-                    
-                    <motion.p 
+
+                    <motion.p
                       className="text-gray-600 mb-6 italic leading-relaxed group-hover:text-gray-700 transition-colors duration-300"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -945,8 +838,8 @@ function BundleService() {
                     >
                       "{testimonial.content}"
                     </motion.p>
-                    
-                    <motion.div 
+
+                    <motion.div
                       className="flex items-center space-x-4"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
