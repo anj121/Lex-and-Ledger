@@ -179,7 +179,7 @@ const updatedBundles = (data?.bundles??[]).map((item, index) => ({
                   </div>
                 </CardHeader>
                 
-                <CardContent className="pt-0 flex flex-col h-full">
+             {(bundle?.features??[])?.length>0&&   <CardContent className="pt-0 flex flex-col h-full">
                   <div className="space-y-4 mb-6 flex-1">
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-3">Key Features:</h4>
@@ -214,7 +214,7 @@ const updatedBundles = (data?.bundles??[]).map((item, index) => ({
                       View Details
                     </Button>
                   </div>
-                </CardContent>
+                </CardContent>}
               </Card>
             </motion.div>
           ))}

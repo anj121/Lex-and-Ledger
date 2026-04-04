@@ -199,7 +199,7 @@ const BundleManagement = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
+    <div className='max-h-[500px] overflow-auto flex gap-2 flex-col'>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -214,8 +214,11 @@ const BundleManagement = () => {
                   </div>
                   <p className="text-gray-600">{bundle.description}</p>
                   <div className="flex gap-4 mt-2 text-sm">
-                    <span className="flex items-center gap-1"><DollarSign className="w-4 h-4" />{bundle.price}</span>
-                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{bundle.duration}</span>
+<span className="flex items-center gap-1">
+  {String(bundle.price).includes("₹")
+    ? bundle.price
+    : `₹${bundle.price}`}
+</span>                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{bundle.duration}</span>
                     <span className="flex items-center gap-1"><Layers className="w-4 h-4" />Bundle</span>
                   </div>
                 </div>
@@ -232,7 +235,7 @@ const BundleManagement = () => {
           </Card>
         ))
       )}
-
+    </div>
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl max-w-3xl w-full p-6 overflow-y-auto max-h-[90vh]">
