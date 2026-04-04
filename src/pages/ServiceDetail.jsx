@@ -217,7 +217,8 @@ const ServiceDetail = () => {
     sessionStorage.setItem("serviceId", service.id);
     sessionStorage.setItem("serviceCategoryId", categoryId);
     sessionStorage.setItem("bookingStep", "3");
-    navigate(`/getStarted/${categoryId}`);
+    console.log(categoryId,selectedCategory.services)
+    navigate(`/getStarted/${categoryId}/${service.id}`);
   };
 
   const handleBundleSelect = (bundle) => {

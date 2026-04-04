@@ -174,10 +174,9 @@ const ServicesPage = () => {
 
     return matchesSearch && matchesCategory;
   });
-
   const handleServiceClick = (service) => {
-   
-        navigate(`/service-detail/${service.id}/${service.categoryId}`)
+    console.log({service});
+        navigate(`/service-detail/${service.id}/`)
       return;
     // if (searchTerm.length > 0) {
     //   navigate(`/getStarted/${service.categoryId}`, {
@@ -375,7 +374,7 @@ const ServicesPage = () => {
         </motion.div>
 
         {/* Service Categories Overview */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -487,7 +486,7 @@ const ServicesPage = () => {
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </motion.div> */}
 
         {/* All Services List */}
         <motion.div
@@ -646,7 +645,7 @@ const ServicesPage = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white text-gray-900 px-8 py-4 text-lg font-semibold h-14"
+                  className="border-white  hover:bg-white text-gray-900 px-8 py-4 text-lg font-semibold h-14"
                   onClick={() => navigate("/contact")}
                 >
                   <FontAwesomeIcon icon={faEnvelope} className="w-5 h-5 mr-2" />

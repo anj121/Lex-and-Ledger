@@ -147,27 +147,39 @@ const parseFAQ = (faqText) => {
   if (!faqText) return [];
 
   const faqArray = [];
-  const blocks = faqText.split('\n').filter(line => line.trim() !== '');
 
-  let currentQuestion = '';
-  let currentAnswer = '';
+  // Case 1: Q: A:
+  let regex = /Q:\s*(.*?)\s*A:\s*(.*?)(?=Q:|$)/gis;
 
-  blocks.forEach(line => {
-    if (line.startsWith('Q:')) {
-      currentQuestion = line.replace('Q:', '').trim();
+  let match;
+  while ((match = regex.exec(faqText)) !== null) {
+    faqArray.push({
+      question: match[1].trim(),
+      answer: match[2].trim(),
+    });
+  }
+
+  // Case 2: Question: Answer:
+  if (faqArray.length === 0) {
+    regex = /Question:\s*(.*?)\s*Answer:\s*(.*?)(?=Question:|$)/gis;
+
+    while ((match = regex.exec(faqText)) !== null) {
+      faqArray.push({
+        question: match[1].trim(),
+        answer: match[2].trim(),
+      });
     }
-    if (line.startsWith('A:')) {
-      currentAnswer = line.replace('A:', '').trim();
-      if (currentQuestion && currentAnswer) {
-        faqArray.push({
-          question: currentQuestion,
-          answer: currentAnswer
-        });
-        currentQuestion = '';
-        currentAnswer = '';
-      }
-    }
-  });
+  }
+
+  // Case 3: Only text (fallback)
+  if (faqArray.length === 0) {
+    return [
+      {
+        question: "General Information",
+        answer: faqText.trim(),
+      },
+    ];
+  }
 
   return faqArray;
 };

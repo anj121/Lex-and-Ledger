@@ -71,7 +71,6 @@ export function ServiceDetailPage() {
       status: "pending"
     }
   ]
-console.log({routeServiceId})
   const faqs = [
     {
       question: "What makes your tax planning service different?",
@@ -129,9 +128,25 @@ console.log({routeServiceId})
   ]
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState(null);
+const finalFaqs =
+  serviceData?.faq?.length > 0
+    ? serviceData.faq
+    : faqs;
+    const finalFeatures =
+  serviceData?.features?.length > 0
+    ? serviceData.features.map((f) => ({
+        title: f,
+        description: "",
+        icon: Shield,
+      }))
+    : features;
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index)
   }
+  const finalDocuments =
+  serviceData?.requirements?.length > 0
+    ? serviceData.requirements
+    : [];
     useEffect(() => {
     const fetchService = async () => {
       try {
@@ -148,29 +163,29 @@ const [error, setError] = useState(null);
 
     fetchService();
   }, [routeServiceId]);
-  useEffect(() => {
-      const serviceId = sessionStorage.getItem("serviceId");
-      const categoryId = sessionStorage.getItem("serviceCategoryId");
-      const step = sessionStorage.getItem("bookingStep");
+  // useEffect(() => {
+  //     const serviceId = sessionStorage.getItem("serviceId");
+  //     const categoryId = sessionStorage.getItem("serviceCategoryId");
+  //     const step = sessionStorage.getItem("bookingStep");
   
-      if (routeServiceId) {
-        const category = serviceCategories.find(cat => cat.id === routeCategoryId);
-        const selectedService=category.services.find((ser)=>ser.id.toString()===routeServiceId.toString());
-        if (category && category.services.length > 0) {
-          setSelectedService({...selectedService,categoryTitle:category.title}); 
-           window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-        return; 
-      }
+  //     if (routeServiceId) {
+  //       const category = serviceCategories.find(cat => cat.id === routeCategoryId);
+  //       const selectedService=category.services.find((ser)=>ser.id.toString()===routeServiceId.toString());
+  //       if (category && category.services.length > 0) {
+  //         // setSelectedService({...selectedService,categoryTitle:category.title}); 
+  //          window.scrollTo({ top: 0, behavior: "smooth" });
+  //       }
+  //       return; 
+  //     }
   
-      if (serviceId && categoryId) {
-        const category = serviceCategories.find(cat => cat.id === categoryId);
-        if (category) {
-          const service = category.services.find(srv => srv.id === parseInt(serviceId));
-          if (service) setSelectedService({...service,categoryTitle:category.title});
-        }
-      }
-    }, [routeServiceId]);
+  //     if (serviceId && categoryId) {
+  //       const category = serviceCategories.find(cat => cat.id === categoryId);
+  //       if (category) {
+  //         const service = category.services.find(srv => srv.id === parseInt(serviceId));
+  //         if (service) setSelectedService({...service,categoryTitle:category.title});
+  //       }
+  //     }
+  //   }, [routeServiceId]);
 const parsePrice = (priceStr) => {
   try {
     if (typeof priceStr !== 'string') {
@@ -199,11 +214,12 @@ const originalPriceStr = serviceData?.price||"";
 const originalPrice = parsePrice(originalPriceStr); 
 const discountAmount = Math.round(originalPrice * 0.24); 
 const navigate=useNavigate();
-const handleBookNow = () => {
-  navigate(`/getStarted/${categoryId}`,
+const handleBookNow = (service) => {
+  
+  navigate(`/getStarted/${service._id}/${service?.category}`,
     {
       state: {
-        selectedServiceId: serviceData.id
+        selectedServiceId: service.id
       }
     }
   );
@@ -252,7 +268,9 @@ useEffect(() => {
                 </Button> */}
                 <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 group cursor-pointer" 
                 // onClick={()=>isLoggedIn?navigate(`/getStarted/company`):navigate(`/login`)}
-                onClick={handleBookNow}
+                onClick={()=>{
+                  handleBookNow(serviceData)
+                }}
                 >
                   Book Now
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -303,7 +321,7 @@ useEffect(() => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
+            {finalFeatures.map((feature, index) => (
               <Card 
                 key={index} 
                 className={`text-center hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 ${
@@ -421,7 +439,7 @@ useEffect(() => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {serviceData?.documents?.length>0&&serviceData?.documents?.map((document, index) => (
+                    {finalDocuments?.map((document, index) => (
                       <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group">
                         <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:bg-gradient-to-r from-blue-600 to-purple-600 transition-colors">
                           <span className="text-blue-600 font-semibold text-sm group-hover:text-white">{index + 1}</span>
@@ -575,7 +593,7 @@ useEffect(() => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {faqs.map((faq, index) => (
+                    {finalFaqs.map((faq, index) => (
                       <Collapsible key={index} open={openFAQ === index} onOpenChange={() => toggleFAQ(index)}>
                         <CollapsibleTrigger className="w-full">
                           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">

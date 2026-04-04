@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button.jsx'
 const ServicesSlider = ({ serviceCategories, handleCategorySelect }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
-
+console.log({serviceCategories})
   const [sliderRef, instanceRef] = useKeenSlider({
     slides: {
       perView: 1.2,

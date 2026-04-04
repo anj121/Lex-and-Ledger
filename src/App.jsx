@@ -164,7 +164,7 @@ function App() {
                 element={<BookingStepper />}
               />
                 <Route
-                path="/service-detail/:serviceId/:categoryId"
+                path="/service-detail/:serviceId"
                 element={<ServiceDetailPage />}
               />
 

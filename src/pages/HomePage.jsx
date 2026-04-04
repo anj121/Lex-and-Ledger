@@ -64,6 +64,7 @@ import {
 } from "@/static/service-data.js";
 import EnhancedBlogPage from "./EnhancedBlogPage.jsx";
 import HorizontalSlider from "@/components/HorizontalSlider.jsx";
+import { formatBackendServices } from "./ServicesPage.jsx";
 
 // Phone number for call functionality
 const SUPPORT_PHONE_NUMBER = "+91-9876543210";
@@ -748,7 +749,41 @@ const[loading,setLoading]=useState(false)
  const getAuthToken = () => {
     return localStorage.getItem('adminToken');
   };
-  const fetchServices = async () => {
+   const[services,setServices]=useState([]);
+ 
+  const fetchService = async () => {
+    try {
+      setLoading(true);
+      const token = getAuthToken();
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${API_BASE}/services/`, {
+        headers
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log({data})
+         const formatted = formatBackendServices(data.services);
+               setServices(formatted);
+
+      } else {
+        // Fallback to mock data if API is not available
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      // Use mock data as fallback
+      toast.error('Using offline data. Backend not connected.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchBundles = async () => {
     try {
       setLoading(true);
       const token = getAuthToken();
@@ -784,9 +819,10 @@ const updatedBundles = (data?.bundles??[]).map((item, index) => ({
     }
   };
   useEffect(()=>{
-    fetchServices()
+    fetchBundles();
+    fetchService();
   },[]);
-  console.log({bundles})
+  console.log({bundles,services})
   const handleCategorySelect = (category) => {
     navigate(`/services/${category.id}`);
   };

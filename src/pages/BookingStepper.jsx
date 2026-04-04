@@ -18,8 +18,8 @@ const BookingPage = () => {
 
     if (routeCategoryId) {
       const category = serviceCategories.find(cat => cat.id === routeCategoryId);
-
-      if(routeServiceId){
+      if(category){
+      if(routeServiceId&&category){
         const selectedService=category.services.find((ser)=>ser.id.toString()===routeServiceId.toString());
         if(selectedService){
           setSelectedService({...selectedService,categoryTitle:category.title,categoryId:category.id}); 
@@ -34,6 +34,7 @@ const BookingPage = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
 
       }
+    }
       return; 
     }
     if (serviceId && categoryId) {

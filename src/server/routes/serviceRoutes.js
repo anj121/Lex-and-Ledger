@@ -1,10 +1,12 @@
 import express from 'express';
 import {
-  getAllServices,
-  createService,
-  updateService,
-  deleteService,
-  getServiceById
+    getAllServices,
+    createService,
+    updateService,
+    deleteService,
+    getServiceById,
+    getServicesByCategory,
+    getGroupedServices
 } from '../controllers/serviceController.js';
 
 const router = express.Router();
@@ -18,5 +20,6 @@ router.get('/:id', getServiceById);
 router.post('/', createService);
 router.put('/:id', updateService);
 router.delete('/:id', deleteService);
-
+router.get("/services/category/:category", getServicesByCategory);
+router.get("/services/grouped", getGroupedServices);
 export default router;
