@@ -38,7 +38,7 @@ const BundleManagement = () => {
     benefits: '',
     popular: false,
     status: 'active',
-    services:""
+    services: ""
   });
 
   const API_BASE = API_CONFIG.BASE_URL;
@@ -108,10 +108,29 @@ const BundleManagement = () => {
       const token = getAuthToken();
       if (token) headers.Authorization = `Bearer ${token}`;
 
+      const processArray = (val) => {
+        if (typeof val === 'string' && val.length > 0) {
+          return val.split('\n')
+            .map(s => s.trim().replace(/^,|,$/g, '').trim())
+            .filter(s => s);
+        }
+        if (Array.isArray(val)) return val;
+        return [];
+      };
+
+      const payload = {
+        ...formData,
+        features: processArray(formData.features),
+        includes: processArray(formData.includes),
+        process: processArray(formData.process),
+        benefits: processArray(formData.benefits),
+        services: processArray(formData.services)
+      };
+
       const res = await fetch(url, {
         method,
         headers,
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
 
       if (!res.ok) throw new Error('Failed to save bundle');
@@ -142,13 +161,31 @@ const BundleManagement = () => {
       benefits: '',
       popular: false,
       status: 'active',
-      services:""
+      services: ""
     });
   };
 
   const handleEdit = (bundle) => {
     setEditingBundle(bundle);
-    setFormData({ ...bundle });
+
+    const formatArray = (val) => {
+      if (Array.isArray(val)) {
+        return val.flatMap(item => typeof item === 'string' ? item.split(/,\n|\n/) : item)
+          .map(s => typeof s === 'string' ? s.trim().replace(/^,|,$/g, '').trim() : s)
+          .filter(s => s)
+          .join('\n');
+      }
+      return val || '';
+    };
+
+    setFormData({
+      ...bundle,
+      features: formatArray(bundle.features),
+      includes: formatArray(bundle.includes),
+      process: formatArray(bundle.process),
+      benefits: formatArray(bundle.benefits),
+      services: formatArray(bundle.services)
+    });
     setShowForm(true);
   };
 
@@ -199,43 +236,43 @@ const BundleManagement = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-    <div className='max-h-[500px] overflow-auto flex gap-2 flex-col'>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        filteredBundles.map((bundle) => (
-          <Card key={bundle._id} className="hover:shadow-md">
-            <CardContent className="p-6">
-              <div className="flex justify-between">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-semibold">{bundle.name}</h3>
-                    {bundle.popular && <Badge>Popular</Badge>}
+      <div className='max-h-[500px] overflow-auto flex gap-2 flex-col'>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          filteredBundles.map((bundle) => (
+            <Card key={bundle._id} className="hover:shadow-md">
+              <CardContent className="p-6">
+                <div className="flex justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-semibold">{bundle.name}</h3>
+                      {bundle.popular && <Badge>Popular</Badge>}
+                    </div>
+                    <p className="text-gray-600">{bundle.description}</p>
+                    <div className="flex gap-4 mt-2 text-sm">
+                      <span className="flex items-center gap-1">
+                        {String(bundle.price).includes("₹")
+                          ? bundle.price
+                          : `₹${bundle.price}`}
+                      </span>                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{bundle.duration}</span>
+                      <span className="flex items-center gap-1"><Layers className="w-4 h-4" />Bundle</span>
+                    </div>
                   </div>
-                  <p className="text-gray-600">{bundle.description}</p>
-                  <div className="flex gap-4 mt-2 text-sm">
-<span className="flex items-center gap-1">
-  {String(bundle.price).includes("₹")
-    ? bundle.price
-    : `₹${bundle.price}`}
-</span>                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{bundle.duration}</span>
-                    <span className="flex items-center gap-1"><Layers className="w-4 h-4" />Bundle</span>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" onClick={() => handleEdit(bundle)}>
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="outline" className="text-red-600" onClick={() => handleDelete(bundle._id)}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleEdit(bundle)}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="outline" className="text-red-600" onClick={() => handleDelete(bundle._id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))
-      )}
-    </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl max-w-3xl w-full p-6 overflow-y-auto max-h-[90vh]">
@@ -255,11 +292,11 @@ const BundleManagement = () => {
                 <Input name="duration" placeholder="Duration" value={formData.duration} onChange={handleInputChange} />
               </div>
 
-              <Textarea name="features" placeholder="Features (comma separated)" value={formData.features} onChange={handleInputChange} />
-              <Textarea name="includes" placeholder="Includes" value={formData.includes} onChange={handleInputChange} />
-              <Textarea name="process" placeholder="Process" value={formData.process} onChange={handleInputChange} />
-              <Textarea name="benefits" placeholder="Benefits" value={formData.benefits} onChange={handleInputChange} />
-              <Textarea name="services" placeholder="Services (comma separated)" value={formData.services} onChange={handleInputChange} />
+              <Textarea name="features" className="min-h-[100px]" placeholder="Features (one per line)" value={formData.features} onChange={handleInputChange} />
+              <Textarea name="includes" className="min-h-[100px]" placeholder="Includes (one per line)" value={formData.includes} onChange={handleInputChange} />
+              <Textarea name="process" className="min-h-[100px]" placeholder="Process (one per line)" value={formData.process} onChange={handleInputChange} />
+              <Textarea name="benefits" className="min-h-[100px]" placeholder="Benefits (one per line)" value={formData.benefits} onChange={handleInputChange} />
+              <Textarea name="services" className="min-h-[100px]" placeholder="Services (one per line)" value={formData.services} onChange={handleInputChange} />
 
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" name="popular" checked={formData.popular} onChange={handleInputChange} />

@@ -23,7 +23,8 @@ import {
   ChevronUp,
   Calculator,
   Target,
-  Briefcase
+  Briefcase,
+  AlertCircle
 } from "lucide-react";
 
 import {
@@ -68,6 +69,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Separator } from '@/components/ui/separator.jsx'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible.jsx'
+import { Skeleton } from '@/components/ui/skeleton.jsx'
 import toast from 'react-hot-toast';
 import API_CONFIG from '../config/api.js';
 const API_BASE = API_CONFIG.BASE_URL;
@@ -85,17 +87,19 @@ function BundleService() {
   const [openFAQ, setOpenFAQ] = useState(null)
   const [hoveredFeature, setHoveredFeature] = useState(null)
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const { categoryId: bundleId } = useParams();
 
-  const [currentBundle, setBundles] = useState([]);
+  const [currentBundle, setBundles] = useState(null);
   const getAuthToken = () => {
     return localStorage.getItem('adminToken');
   };
   const fetchServices = async () => {
     try {
       setLoading(true);
+      setError(null);
       const token = getAuthToken();
       const headers = {
         'Content-Type': 'application/json',
@@ -110,22 +114,41 @@ function BundleService() {
       });
       if (response.ok) {
         const data = await response.json();
+
+        const processArray = (arr) => {
+          if (!Array.isArray(arr)) return [];
+          return arr.flatMap(str => str.split('\n'))
+            .map(s => s.trim().replace(/^,|,$/g, '').trim())
+            .filter(s => s);
+        };
+
         const updatedBundles = (data?.bundles ?? []).map((item, index) => ({
           ...item,
           icon: icons[index % icons.length],
           color: colors[index % colors.length],
-          savings: 0
+          savings: 0,
+          features: processArray(item.features),
+          includes: processArray(item.includes),
+          process: processArray(item.process),
+          benefits: processArray(item.benefits),
+          services: processArray(item.services)
         })).find(b => b._id.toString() === bundleId);
-        setBundles(updatedBundles)
+
+        if (updatedBundles) {
+          setBundles(updatedBundles);
+        } else {
+          setError('Bundle not found');
+        }
         window.scrollTo(0, 0);
 
 
       } else {
         // Fallback to mock data if API is not available
+        setError('Failed to fetch bundle data');
       }
     } catch (error) {
       console.error('Error fetching services:', error);
-      // Use mock data as fallback
+      setError(error.message || 'An unexpected error occurred');
       toast.error('Using offline data. Backend not connected.');
     } finally {
       setLoading(false);
@@ -213,6 +236,42 @@ function BundleService() {
 
   const BundleIcon = bundleIcons[selectedBundle] || Package
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <Skeleton className="h-[24rem] w-full rounded-3xl" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+            <Skeleton className="h-40 rounded-2xl" />
+            <Skeleton className="h-40 rounded-2xl" />
+            <Skeleton className="h-40 rounded-2xl" />
+            <Skeleton className="h-40 rounded-2xl" />
+          </div>
+          <div className="max-w-4xl mx-auto mt-12 space-y-6">
+            <Skeleton className="h-12 w-3/4 mx-auto rounded-xl" />
+            <Skeleton className="h-[32rem] w-full rounded-3xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !currentBundle) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md w-full border border-gray-100">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Oops! Something went wrong</h2>
+          <p className="text-gray-600 mb-6">{error || "Bundle not found"}</p>
+          <Button onClick={() => navigate(-1)} className="w-full bg-blue-600 hover:bg-blue-700 rounded-xl h-12">
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  console.log(currentBundle)
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
 
@@ -332,8 +391,8 @@ function BundleService() {
               >
                 <CardHeader className="pb-4">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${hoveredFeature === index
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600'
-                      : 'bg-gradient-to-r from-blue-100 to-purple-100'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600'
+                    : 'bg-gradient-to-r from-blue-100 to-purple-100'
                     }`}>
                     <feature.icon className={`w-6 h-6 transition-colors duration-300 ${hoveredFeature === index ? 'text-white' : 'text-blue-600'
                       }`} />
@@ -367,8 +426,8 @@ function BundleService() {
                     key={tab.id}
                     onClick={() => setSelectedTab(tab.id)}
                     className={`px-4 py-3 rounded-md font-medium transition-all duration-200 whitespace-nowrap ${selectedTab === tab.id
-                        ? 'bg-white text-blue-600 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                       }`}
                   >
                     {tab.label}

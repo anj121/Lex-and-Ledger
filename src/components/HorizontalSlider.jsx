@@ -56,9 +56,9 @@ const HorizontalSlider = ({ items, renderCard, slidesPerView = 3 }) => {
           </button>
         )}
 
-      <div ref={sliderRef} className="keen-slider">
-        {items.map((item) => (
-          <div key={item.id} className="keen-slider__slide">
+      <div ref={sliderRef} className="keen-slider py-6 mb-6">
+        {items.map((item, index) => (
+          <div key={`${item.id || item._id}-${index}`} className="keen-slider__slide !overflow-visible">
             {renderCard(item)}
           </div>
         ))}

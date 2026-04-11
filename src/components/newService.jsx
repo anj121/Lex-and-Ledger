@@ -1,5 +1,5 @@
 
-import { useState ,useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import '../App'
 import { useNavigate, useParams } from 'react-router-dom';
 import { serviceCategories } from '@/static/service-data';
@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator.jsx'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible.jsx'
 import API_CONFIG from '@/config/api';
 import axios from 'axios';
-  const API_BASE = API_CONFIG.BASE_URL;
+const API_BASE = API_CONFIG.BASE_URL;
 
 export const getServiceById = async (id) => {
   try {
@@ -27,15 +27,15 @@ export const getServiceById = async (id) => {
   }
 };
 export function ServiceDetailPage() {
-  const { categoryId } = useParams(); 
-    const [serviceData, setSelectedService] = useState(null);
-    const { serviceId: routeServiceId } = useParams();
+  const { categoryId } = useParams();
+  const [serviceData, setSelectedService] = useState(null);
+  const { serviceId: routeServiceId } = useParams();
   const { categoryId: routeCategoryId } = useParams();
   const [selectedTab, setSelectedTab] = useState('overview');
 
-    const [openFAQ, setOpenFAQ] = useState(null);
-      const [hoveredFeature, setHoveredFeature] = useState(null);
-       const features = [
+  const [openFAQ, setOpenFAQ] = useState(null);
+  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const features = [
     { icon: Shield, title: "Expert Consultation", description: "Get advice from certified tax professionals" },
     { icon: Award, title: "Compliance Assurance", description: "Ensure 100% regulatory compliance" },
     { icon: Users, title: "Dedicated Support", description: "Personal tax advisor throughout the process" },
@@ -126,28 +126,28 @@ export function ServiceDetailPage() {
     { id: 'timeline', label: 'Timeline' },
     { id: 'faq', label: 'FAQ' }
   ]
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState(null);
-const finalFaqs =
-  serviceData?.faq?.length > 0
-    ? serviceData.faq
-    : faqs;
-    const finalFeatures =
-  serviceData?.features?.length > 0
-    ? serviceData.features.map((f) => ({
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const finalFaqs =
+    serviceData?.faq?.length > 0
+      ? serviceData.faq
+      : faqs;
+  const finalFeatures =
+    serviceData?.features?.length > 0
+      ? serviceData.features.map((f) => ({
         title: f,
         description: "",
         icon: Shield,
       }))
-    : features;
+      : features;
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index)
   }
   const finalDocuments =
-  serviceData?.requirements?.length > 0
-    ? serviceData.requirements
-    : [];
-    useEffect(() => {
+    serviceData?.requirements?.length > 0
+      ? serviceData.requirements
+      : [];
+  useEffect(() => {
     const fetchService = async () => {
       try {
         if (routeServiceId) {
@@ -167,7 +167,7 @@ const finalFaqs =
   //     const serviceId = sessionStorage.getItem("serviceId");
   //     const categoryId = sessionStorage.getItem("serviceCategoryId");
   //     const step = sessionStorage.getItem("bookingStep");
-  
+
   //     if (routeServiceId) {
   //       const category = serviceCategories.find(cat => cat.id === routeCategoryId);
   //       const selectedService=category.services.find((ser)=>ser.id.toString()===routeServiceId.toString());
@@ -177,7 +177,7 @@ const finalFaqs =
   //       }
   //       return; 
   //     }
-  
+
   //     if (serviceId && categoryId) {
   //       const category = serviceCategories.find(cat => cat.id === categoryId);
   //       if (category) {
@@ -186,55 +186,55 @@ const finalFaqs =
   //       }
   //     }
   //   }, [routeServiceId]);
-const parsePrice = (priceStr) => {
-  try {
-    if (typeof priceStr !== 'string') {
-      throw new TypeError('Input must be a string');
-    }
-
-    const match = priceStr.match(/₹([\d,]+)/);
-    if (!match) {
-      throw new Error('Price format is invalid or missing ₹ symbol');
-    }
-
-    const numericValue = parseInt(match[1].replace(/,/g, ""), 10);
-    if (isNaN(numericValue)) {
-      throw new Error('Parsed value is not a valid number');
-    }
-
-    return numericValue;
-  } catch (error) {
-    console.error(`parsePrice error: ${error.message}`);
-    return null;
-  }
-};
-const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-const originalPriceStr = serviceData?.price||""; 
-const originalPrice = parsePrice(originalPriceStr); 
-const discountAmount = Math.round(originalPrice * 0.24); 
-const navigate=useNavigate();
-const handleBookNow = (service) => {
-  
-  navigate(`/getStarted/${service._id}/${service?.category}`,
-    {
-      state: {
-        selectedServiceId: service.id
+  const parsePrice = (priceStr) => {
+    try {
+      if (typeof priceStr !== 'string') {
+        throw new TypeError('Input must be a string');
       }
-    }
-  );
-};
-useEffect(() => {
-  setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
-}, [location.pathname]);
 
-  if(!serviceData){
+      const match = priceStr.match(/₹([\d,]+)/);
+      if (!match) {
+        throw new Error('Price format is invalid or missing ₹ symbol');
+      }
+
+      const numericValue = parseInt(match[1].replace(/,/g, ""), 10);
+      if (isNaN(numericValue)) {
+        throw new Error('Parsed value is not a valid number');
+      }
+
+      return numericValue;
+    } catch (error) {
+      console.error(`parsePrice error: ${error.message}`);
+      return null;
+    }
+  };
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const originalPriceStr = serviceData?.price || "";
+  const originalPrice = parsePrice(originalPriceStr);
+  const discountAmount = Math.round(originalPrice * 0.24);
+  const navigate = useNavigate();
+  const handleBookNow = (service) => {
+
+    navigate(`/getStarted/${service._id}/${service?.category}`,
+      {
+        state: {
+          selectedServiceId: service.id
+        }
+      }
+    );
+  };
+  useEffect(() => {
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+  }, [location.pathname]);
+
+  if (!serviceData) {
     return null
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-    
+
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black opacity-10"></div>
@@ -242,7 +242,7 @@ useEffect(() => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in-up">
               <Badge className="mb-4 bg-blue-500/20 text-blue-100 border-blue-400">
-                {serviceData.categoryTitle??"Professional Service"}
+                {serviceData.categoryTitle ?? "Professional Service"}
               </Badge>
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
                 {serviceData.name}
@@ -261,21 +261,21 @@ useEffect(() => {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                 {/* <Button size="lg" className="bg-white cursor-pointer text-blue-600 hover:bg-blue-50 group" onClick={()=>navigate(-1)}>
+                {/* <Button size="lg" className="bg-white cursor-pointer text-blue-600 hover:bg-blue-50 group" onClick={()=>navigate(-1)}>
                   
                   <ArrowLeft className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   Back to Detail
                 </Button> */}
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 group cursor-pointer" 
-                // onClick={()=>isLoggedIn?navigate(`/getStarted/company`):navigate(`/login`)}
-                onClick={()=>{
-                  handleBookNow(serviceData)
-                }}
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 group cursor-pointer"
+                  // onClick={()=>isLoggedIn?navigate(`/getStarted/company`):navigate(`/login`)}
+                  onClick={() => {
+                    handleBookNow(serviceData)
+                  }}
                 >
                   Book Now
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                
+
               </div>
             </div>
             <div className="hidden lg:block animate-fade-in-right">
@@ -322,21 +322,18 @@ useEffect(() => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {finalFeatures.map((feature, index) => (
-              <Card 
-                key={index} 
-                className={`text-center hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 ${
-                  hoveredFeature === index ? 'ring-2 ring-blue-500' : ''
-                }`}
+              <Card
+                key={index}
+                className={`text-center hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 ${hoveredFeature === index ? 'ring-2 ring-blue-500' : ''
+                  }`}
                 onMouseEnter={() => setHoveredFeature(index)}
                 onMouseLeave={() => setHoveredFeature(null)}
               >
                 <CardHeader>
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${
-                    hoveredFeature === index ? 'bg-gradient-to-r from-blue-600 to-purple-600 scale-110' : 'bg-blue-100'
-                  }`}>
-                    <feature.icon className={`w-6 h-6 transition-colors duration-300 ${
-                      hoveredFeature === index ? 'text-white' : 'text-blue-600'
-                    }`} />
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${hoveredFeature === index ? 'bg-gradient-to-r from-blue-600 to-purple-600 scale-110' : 'bg-blue-100'
+                    }`}>
+                    <feature.icon className={`w-6 h-6 transition-colors duration-300 ${hoveredFeature === index ? 'text-white' : 'text-blue-600'
+                      }`} />
                   </div>
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
                 </CardHeader>
@@ -349,7 +346,7 @@ useEffect(() => {
         </div>
       </section>
 
-     
+
 
       {/* Main Content */}
       <section className="py-16 bg-white">
@@ -362,11 +359,10 @@ useEffect(() => {
                   <button
                     key={tab.id}
                     onClick={() => setSelectedTab(tab.id)}
-                    className={`px-4 py-3 rounded-md font-medium transition-all duration-200 whitespace-nowrap ${
-                      selectedTab === tab.id
-                        ? 'bg-white text-blue-600 shadow-sm' 
+                    className={`px-4 py-3 rounded-md font-medium transition-all duration-200 whitespace-nowrap ${selectedTab === tab.id
+                        ? 'bg-white text-blue-600 shadow-sm'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -420,7 +416,7 @@ useEffect(() => {
                       </div>
                       <div className="text-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
                         <FileText className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                        <div className="font-semibold text-lg">{serviceData.documents?.length||0}</div>
+                        <div className="font-semibold text-lg">{serviceData.requirements?.length || 0}</div>
                         <div className="text-sm text-gray-600">Documents Required</div>
                       </div>
                     </div>
@@ -461,7 +457,7 @@ useEffect(() => {
                   <div className="mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-600">
                     <h4 className="font-medium text-blue-900 mb-2">📋 Document Checklist</h4>
                     <p className="text-sm text-blue-800">
-                      Having all documents ready will help us provide faster and more accurate tax planning advice. 
+                      Having all documents ready will help us provide faster and more accurate tax planning advice.
                       If you're missing any documents, our team can guide you on how to obtain them.
                     </p>
                   </div>
@@ -541,11 +537,10 @@ useEffect(() => {
                           <div className="absolute left-6 top-12 w-0.5 h-16 bg-gray-200"></div>
                         )}
                         <div className="flex items-start space-x-6">
-                          <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
-                            item.status === 'completed' ? 'bg-green-500' :
-                            item.status === 'in-progress' ? 'bg-gradient-to-r from-blue-600 to-purple-600' :
-                            'bg-gray-300'
-                          }`}>
+                          <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${item.status === 'completed' ? 'bg-green-500' :
+                              item.status === 'in-progress' ? 'bg-gradient-to-r from-blue-600 to-purple-600' :
+                                'bg-gray-300'
+                            }`}>
                             {item.status === 'completed' ? (
                               <CheckCircle className="w-6 h-6 text-white" />
                             ) : (
@@ -555,12 +550,12 @@ useEffect(() => {
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
                               <h4 className="text-lg font-semibold text-gray-900">{item.title}</h4>
-                              <Badge 
+                              <Badge
                                 variant={item.status === 'completed' ? 'default' : 'outline'}
                                 className={
                                   item.status === 'completed' ? 'bg-green-500' :
-                                  item.status === 'in-progress' ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' :
-                                  'text-gray-500'
+                                    item.status === 'in-progress' ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' :
+                                      'text-gray-500'
                                 }
                               >
                                 {item.day}
